@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -43,14 +45,148 @@ public class BillsUser {
     @Column(name = "payment_date")
     private LocalDate paymentDate;
 
-    @NotNull
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
 
-    @NotNull
-    @ColumnDefault("current_timestamp()")
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
+    public BillsUser() {
+    }
 
+    public BillsUser(Bill bill, User u) {
+        this.bill = bill;
+        this.user = u;
+        this.id = new BillsUserId(bill, u);
+    }
+
+    public BillsUser(Bill bill, User u, BigDecimal owed) {
+        this.bill = bill;
+        this.user = u;
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = BigDecimal.ZERO;
+        this.paymentDate = null;
+    }
+
+    public BillsUser(Bill bill, User u, BigDecimal owed, BigDecimal paid) {
+        this.bill = bill;
+        this.user = u;
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = paid;
+        this.paymentDate = null;
+    }
+
+    public BillsUser(Bill bill, User u, BigDecimal owed, BigDecimal paid, LocalDate paymentDate) {
+        this.bill = bill;
+        this.user = u;
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = paid;
+        this.paymentDate = paymentDate;
+    }
+
+    // CON LONG
+    public BillsUser(Long bill, Long u) {
+        this.bill = new Bill(bill);
+        this.user = new User(u);
+        this.id = new BillsUserId(bill, u);
+    }
+
+    public BillsUser(Long bill, Long u, BigDecimal owed) {
+        this.bill = new Bill(bill);
+        this.user = new User(u);
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = BigDecimal.ZERO;
+        this.paymentDate = null;
+    }
+
+    public BillsUser(Long bill, Long u, BigDecimal owed, BigDecimal paid) {
+        this.bill = new Bill(bill);
+        this.user = new User(u);
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = paid;
+        this.paymentDate = null;
+    }
+
+    public BillsUser(Long bill, Long u, BigDecimal owed, BigDecimal paid, LocalDate paymentDate) {
+        this.bill = new Bill(bill);
+        this.user = new User(u);
+        this.id = new BillsUserId(bill, u);
+        this.owed = owed;
+        this.paid = paid;
+        this.paymentDate = paymentDate;
+    }
+
+    public BillsUserId getId() {
+        return id;
+    }
+
+    public void setId(BillsUserId id) {
+        this.id = id;
+    }
+
+    public Bill getBill() {
+        return bill;
+    }
+
+    public void setBill(Bill bill) {
+        this.bill = bill;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public BigDecimal getOwed() {
+        return owed;
+    }
+
+    public void setOwed(BigDecimal owed) {
+        this.owed = owed;
+    }
+
+    public BigDecimal getPaid() {
+        return paid;
+    }
+
+    public void setPaid(BigDecimal paid) {
+        this.paid = paid;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "BillsUser{" +
+                "id=" + id +
+                ", bill=" + bill.getId() +
+                ", user=" + user.getId() +
+                ", owed=" + owed +
+                ", paid=" + paid +
+                ", paymentDate=" + paymentDate +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BillsUser billsUser = (BillsUser) o;
+        return Objects.equals(id, billsUser.id) && Objects.equals(bill, billsUser.bill) && Objects.equals(user, billsUser.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, bill, user);
+    }
 }

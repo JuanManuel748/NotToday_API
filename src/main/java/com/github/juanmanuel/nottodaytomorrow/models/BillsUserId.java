@@ -22,6 +22,19 @@ public class BillsUserId implements java.io.Serializable {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
+    public BillsUserId() {
+    }
+
+    public BillsUserId(Long billId, Long userId) {
+        this.billId = billId;
+        this.userId = userId;
+    }
+
+    public BillsUserId(Bill bill, User user) {
+        this.billId = bill.getId();
+        this.userId = user.getId();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

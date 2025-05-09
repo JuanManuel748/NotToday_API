@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.services;
 
+import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.Team;
 import com.github.juanmanuel.nottodaytomorrow.repositories.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public Team update(Long id, Team team) {
+    public Team update(Long id, Team team) throws NotFoundException {
         if (teamRepository.findById(id).isPresent()) {
             team.setId(id);
             return teamRepository.save(team);
@@ -26,7 +27,7 @@ public class TeamService {
         }
     }
 
-    public boolean delete(Long id) {
+    public boolean delete(Long id) throws NotFoundException {
         if (teamRepository.existsById(id)) {
             teamRepository.deleteById(id);
             return true;
@@ -35,7 +36,7 @@ public class TeamService {
         }
     }
 
-    public Team getById(Long id) {
+    public Team getById(Long id) throws NotFoundException {
         Optional<Team> team = teamRepository.findById(id);
         if (team.isPresent()) {
             return team.get();
@@ -44,7 +45,12 @@ public class TeamService {
         }
     }
 
-    public List<Team> getAll() {
-        return teamRepository.findAll();
+    public List<Team> getAll() throws NotFoundException {
+        List<Team> teams = teamRepository.findAll();
+        if (!teams.isEmpty()) {
+            return teams;
+        } else {
+            throw new NotFoundException("No teams found", Team.class);
+        }
     }
 }
