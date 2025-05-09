@@ -22,6 +22,17 @@ public class CommentId implements java.io.Serializable {
     @Column(name = "commenter_id", nullable = false)
     private Long commenterId;
 
+    public CommentId() {}
+
+    public CommentId(User u, User c) {
+        this.userId = u.getId();
+        this.commenterId = c.getId();
+    }
+    public CommentId(Long userId, Long commenterId) {
+        this.userId = userId;
+        this.commenterId = commenterId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

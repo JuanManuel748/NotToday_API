@@ -62,4 +62,149 @@ public class Task {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+
+    public Task() {}
+
+    public Task(Long id) {
+        this.id = id;
+    }
+
+    public Task(String name, String description, Instant date, Long teamId, Long creatorId, Long assignedId) {
+        this.name = name;
+        this.description = description;
+        this.limitDate = date;
+        this.state = "PENDING";
+        this.team = new Team(teamId);
+        this.creator = new User(creatorId);
+        this.assigned = new User(assignedId);
+        this.createdAt = Instant.now();
+    }
+    public Task(String name, String description, Instant date, String state, Long teamId, Long creatorId, Long assignedId) {
+        this.name = name;
+        this.description = description;
+        this.limitDate = date;
+        this.state = state;
+        this.team = new Team(teamId);
+        this.creator = new User(creatorId);
+        this.assigned = new User(assignedId);
+        this.createdAt = Instant.now();
+    }
+
+    public Task(String name, String description, Instant date, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+        this.name = name;
+        this.description = description;
+        this.limitDate = date;
+        this.state = "PENDING";
+        this.team = new Team(teamId);
+        this.creator = new User(creatorId);
+        this.assigned = new User(assignedId);
+        this.createdAt = createdAt;
+    }
+    public Task(String name, String description, Instant date, String state, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+        this.name = name;
+        this.description = description;
+        this.limitDate = date;
+        this.state = state;
+        this.team = new Team(teamId);
+        this.creator = new User(creatorId);
+        this.assigned = new User(assignedId);
+        this.createdAt = createdAt;
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Instant getLimitDate() {
+        return limitDate;
+    }
+
+    public void setLimitDate(Instant limitDate) {
+        this.limitDate = limitDate;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
+    }
+
+    public User getAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(User assigned) {
+        this.assigned = assigned;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", limitDate=" + limitDate +
+                ", state='" + state + '\'' +
+                ", team=" + team.getId() +
+                ", creator=" + creator.getId() +
+                ", assigned=" + assigned.getId() +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task task)) return false;
+
+        return task.getId().equals(this.id);
+    }
+
 }

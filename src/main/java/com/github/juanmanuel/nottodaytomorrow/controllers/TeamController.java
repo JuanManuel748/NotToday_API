@@ -4,43 +4,52 @@ import com.github.juanmanuel.nottodaytomorrow.models.Team;
 import com.github.juanmanuel.nottodaytomorrow.services.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/team")
+@RequestMapping("/teams")
 public class TeamController {
     @Autowired
     private TeamService teamService;
 
     @Operation(summary = "Crea un equipo")
     @PostMapping
-    public Team create(@RequestBody Team team) {
-        return teamService.create(team);
+    public ResponseEntity<Team> create(@RequestBody Team team) {
+        Team t = teamService.create(team);
+        return ResponseEntity.status(HttpStatus.CREATED).body(t);
     }
 
     @Operation(summary = "Actualiza un equipo")
     @PutMapping("/{id}")
-    public Team update(@PathVariable Long id, @RequestBody Team team) {
-        return teamService.update(id, team);
-    }
+    public ResponseEntity<Team> update(@PathVariable Long id, @RequestBody Team team) {
+        Team t = teamService.update(id, team);
+        return ResponseEntity.status(HttpStatus.OK).body(t);    }
 
     @Operation(summary = "Elimina un equipo")
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) {
-        return teamService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (teamService.delete(id)) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @Operation(summary = "Busca un equipo por su id")
     @GetMapping("/{id}")
-    public Team getById(@PathVariable Long id) {
-        return teamService.getById(id);
+    public ResponseEntity<Team> getById(@PathVariable Long id) {
+        Team t = teamService.getById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(t);
     }
 
     @Operation(summary = "Busca todos los equipos")
     @GetMapping
-    public List<Team> getAll() {
-        return teamService.getAll();
+    public ResponseEntity<List<Team>> getAll() {
+        List<Team> teams = teamService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(teams);
     }
 }

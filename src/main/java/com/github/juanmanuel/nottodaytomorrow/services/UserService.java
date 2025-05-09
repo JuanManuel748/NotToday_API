@@ -73,7 +73,7 @@ public class UserService {
         return userRepo.save(user);
     }
 
-    public User update(Long id, User user) {
+    public User update(Long id, User user) throws NotFoundException {
         Optional<User> existingUser = userRepo.findById(id);
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
@@ -89,7 +89,7 @@ public class UserService {
         }
     }
 
-    public boolean delete(Long id) {
+    public boolean delete(Long id) throws NotFoundException {
         Optional<User> user = userRepo.findById(id);
         if (user.isPresent()) {
             userRepo.delete(user.get());
@@ -99,7 +99,9 @@ public class UserService {
         }
     }
 
-    public List<Team> getTeamsByUserEmail(String email) {
+    // Funciones adicionales
+
+    public List<Team> getTeamsByUserEmail(String email) throws NotFoundException {
         User user = getByEmail(email);
         List<Team> teams = usersTeamService.getTeamsByUserId(user.getId());
         if (!teams.isEmpty()) {
