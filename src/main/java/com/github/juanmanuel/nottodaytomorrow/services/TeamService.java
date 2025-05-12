@@ -2,7 +2,9 @@ package com.github.juanmanuel.nottodaytomorrow.services;
 
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.Team;
+import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.repositories.TeamRepository;
+import com.github.juanmanuel.nottodaytomorrow.repositories.UsersTeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.Optional;
 public class TeamService {
     @Autowired
     private TeamRepository teamRepository;
+    @Autowired
+    private UsersTeamRepository usrtmRepository;
 
     public Team create(Team team) {
         return teamRepository.save(team);
@@ -51,6 +55,15 @@ public class TeamService {
             return teams;
         } else {
             throw new NotFoundException("No teams found", Team.class);
+        }
+    }
+
+    public List<User> getUsersByTeamId(Long id) throws NotFoundException {
+        List<User> users = usrtmRepository.findUsersByTeam(id);
+        if (!users.isEmpty()) {
+            return users;
+        } else {
+            throw new NotFoundException("No users found for team with id: " + id, users);
         }
     }
 }
