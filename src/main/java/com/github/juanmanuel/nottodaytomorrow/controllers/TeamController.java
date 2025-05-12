@@ -1,6 +1,7 @@
 package com.github.juanmanuel.nottodaytomorrow.controllers;
 
 import com.github.juanmanuel.nottodaytomorrow.models.Team;
+import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.services.TeamService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +53,13 @@ public class TeamController {
         List<Team> teams = teamService.getAll();
         return ResponseEntity.status(HttpStatus.OK).body(teams);
     }
+
+    @Operation(summary = "Buscar usuarios del equipo por su id")
+    @GetMapping("/{id}/users")
+    public ResponseEntity<List<User>> getUsersByTeamId(@PathVariable Long id) {
+        List<User> users = teamService.getUsersByTeamId(id);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
+    }
+
+
 }

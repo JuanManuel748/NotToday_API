@@ -1,6 +1,7 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,8 +20,10 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "bills")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Bill {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -69,6 +72,24 @@ public class Bill {
     }
 
     public Bill(BigDecimal amount, String description, Team team, User payer, Instant createdAt) {
+        this.amount = amount;
+        this.description = description;
+        this.team = team;
+        this.payer = payer;
+        this.createdAt = createdAt;
+    }
+
+    public Bill(Long id, BigDecimal amount, String description, Team team, User payer) {
+        this.id = id;
+        this.amount = amount;
+        this.description = description;
+        this.team = team;
+        this.payer = payer;
+        this.createdAt = Instant.now();
+    }
+
+    public Bill(Long id, BigDecimal amount, String description, Team team, User payer, Instant createdAt) {
+        this.id = id;
         this.amount = amount;
         this.description = description;
         this.team = team;
@@ -150,5 +171,19 @@ public class Bill {
         if (obj == null || getClass() != obj.getClass()) return false;
         Bill bill = (Bill) obj;
         return id != null && id.equals(bill.id);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
     }
 }

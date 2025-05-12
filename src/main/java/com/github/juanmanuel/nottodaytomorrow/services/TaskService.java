@@ -63,16 +63,6 @@ public class TaskService {
         }
     }
 
-    // Funciones adicionales
-    public List<Task> findByName(String name) throws NotFoundException {
-        List<Task> tasks = taskRepository.findByName(name);
-        if (!tasks.isEmpty()) {
-            return tasks;
-        } else {
-            throw new NotFoundException("Task not found with name: " + name, tasks);
-        }
-
-    }
 
     public List<Task> findByCreator(Long creatorId) throws NotFoundException {
         List<Task> tasks = taskRepository.findByCreator(creatorId);

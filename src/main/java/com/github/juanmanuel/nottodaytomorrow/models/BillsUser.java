@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "bills_users")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class BillsUser {
     @EmbeddedId
     private BillsUserId id;

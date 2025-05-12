@@ -11,11 +11,6 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query(
-            value = "SELECT * FROM tasks AS t WHERE t.name LIKE %?1%",
-            nativeQuery = true
-    )
-    List<Task> findByName(String name);
-    @Query(
             value = "SELECT * FROM tasks AS t WHERE t.creator_id = ?1",
             nativeQuery = true
     )
@@ -31,7 +26,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     )
     List<Task> findByTeam(Long teamId);
     @Query(
-            value = "SELECT * FROM tasks AS t WHERE t.status = ?1",
+            value = "SELECT * FROM tasks AS t WHERE t.state = ?1",
             nativeQuery = true
     )
     List<Task> findByStatus(String creatorId);

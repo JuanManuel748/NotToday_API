@@ -74,13 +74,26 @@ public class UserController {
     public ResponseEntity<List<Team>> getUserTeamsByEmail(@PathVariable String email) {
         List<Team> teams = userService.getTeamsByUserEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(teams);
-        // DA ERROR 500
+    }
+
+    @Operation(summary = "Buscar equipos del usuario por su id")
+    @GetMapping("/{userId}/teams")
+    public ResponseEntity<List<Team>> getUserTeamsByEmail(@PathVariable Long userId) {
+        List<Team> teams = userService.getTeamsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(teams);
     }
 
     @Operation(summary = "Añadir equipo al usuario por su id")
     @PostMapping("/{userId}/teams/{teamId}")
     public ResponseEntity<User> addTeamToUser(@PathVariable Long userId, @PathVariable Long teamId, @RequestParam String role) {
         User user = userService.addTeamToUser(userId, teamId, role);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
+    @Operation(summary = "Eliminar equipo al usuario por su id")
+    @DeleteMapping("/{userId}/teams/{teamId}")
+    public ResponseEntity<User> deleteTeamToUser(@PathVariable Long userId, @PathVariable Long teamId) {
+        User user = userService.deleteTeam(userId, teamId);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

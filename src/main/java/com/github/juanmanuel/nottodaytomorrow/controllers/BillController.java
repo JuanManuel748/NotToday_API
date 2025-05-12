@@ -56,10 +56,13 @@ public class BillController {
     }
 
     @Operation(summary = "Busca facturas por su monto")
-    @GetMapping("/amount/{amount}")
-    public ResponseEntity<List<Bill>> getByAmount(@PathVariable BigDecimal maxmount, @RequestParam(required = false) BigDecimal amount) {
-        BigDecimal min = amount != null ? amount : BigDecimal.ZERO;
-        List<Bill> bills = billService.findByAmountRange(min, maxmount);
+    @GetMapping("/amount/{minAmount}")
+    public ResponseEntity<List<Bill>> getByAmount(
+            @PathVariable BigDecimal minAmount,
+            @RequestParam(required = false) BigDecimal maxamount) {
+
+        BigDecimal max = maxamount != null ? maxamount : new BigDecimal(Double.MAX_VALUE);
+        List<Bill> bills = billService.findByAmountRange(minAmount, max);
         return ResponseEntity.status(HttpStatus.OK).body(bills);
     }
 

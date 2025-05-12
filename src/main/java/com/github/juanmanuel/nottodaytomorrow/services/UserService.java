@@ -99,7 +99,6 @@ public class UserService {
         }
     }
 
-    // Funciones adicionales
 
     public List<Team> getTeamsByUserEmail(String email) throws NotFoundException {
         User user = getByEmail(email);
@@ -108,6 +107,16 @@ public class UserService {
             return teams;
         } else {
             throw new NotFoundException("No teams found for user: " + email, user);
+        }
+
+    }
+
+    public List<Team> getTeamsByUserId(Long userId) throws NotFoundException {
+        List<Team> teams = usersTeamService.getTeamsByUserId(userId);
+        if (!teams.isEmpty()) {
+            return teams;
+        } else {
+            throw new NotFoundException("No teams found for user: " + userId, User.class);
         }
 
     }
@@ -123,6 +132,26 @@ public class UserService {
                         user.setUsersTeams(new ArrayList<>());
                     }
                     user.getUsersTeams().add(ut);
+                }
+            } else {
+                throw new NotFoundException("Team not found with id: " + teamId, team);
+            }
+            return user;
+        } else {
+            throw new NotFoundException("User not found with id: " + userId, user);
+        }
+
+    }
+
+    public User deleteTeam(Long userId, Long teamId) throws NotFoundException {
+        User user = getById(userId);
+        if (user != null) {
+            Team team = teamService.getById(teamId);
+            if (team != null) {
+                UsersTeam ut = usersTeamService.getByUserAndTeam(user.getId(), team.getId());
+                if (ut != null) {
+                    usersTeamService.delete(user.getId(), team.getId());
+                    user.getUsersTeams().remove(ut);
                 }
             } else {
                 throw new NotFoundException("Team not found with id: " + teamId, team);

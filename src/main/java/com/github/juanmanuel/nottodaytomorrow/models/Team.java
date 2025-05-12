@@ -1,6 +1,8 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -18,6 +20,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "teams")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +35,7 @@ public class Team {
     @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "creation_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate creationDate;
 
     @OneToMany(mappedBy = "team", fetch = FetchType.LAZY)

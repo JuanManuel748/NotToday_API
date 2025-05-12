@@ -1,6 +1,7 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -10,11 +11,13 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "tasks")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +35,7 @@ public class Task {
 
     @NotNull
     @Column(name = "limit_date", nullable = false)
-    private Instant limitDate;
+    private LocalDateTime limitDate;
 
     @Size(max = 100)
     @NotNull
@@ -69,7 +72,7 @@ public class Task {
         this.id = id;
     }
 
-    public Task(String name, String description, Instant date, Long teamId, Long creatorId, Long assignedId) {
+    public Task(Long id, String name, String description, LocalDateTime date, Long teamId, Long creatorId, Long assignedId) {
         this.name = name;
         this.description = description;
         this.limitDate = date;
@@ -79,7 +82,8 @@ public class Task {
         this.assigned = new User(assignedId);
         this.createdAt = Instant.now();
     }
-    public Task(String name, String description, Instant date, String state, Long teamId, Long creatorId, Long assignedId) {
+    public Task(Long id, String name, String description, LocalDateTime date, String state, Long teamId, Long creatorId, Long assignedId) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
@@ -90,7 +94,8 @@ public class Task {
         this.createdAt = Instant.now();
     }
 
-    public Task(String name, String description, Instant date, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+    public Task(Long id, String name, String description, LocalDateTime date, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
@@ -100,7 +105,8 @@ public class Task {
         this.assigned = new User(assignedId);
         this.createdAt = createdAt;
     }
-    public Task(String name, String description, Instant date, String state, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+    public Task(Long id, String name, String description, LocalDateTime date, String state, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
@@ -136,11 +142,11 @@ public class Task {
         this.description = description;
     }
 
-    public Instant getLimitDate() {
+    public LocalDateTime getLimitDate() {
         return limitDate;
     }
 
-    public void setLimitDate(Instant limitDate) {
+    public void setLimitDate(LocalDateTime limitDate) {
         this.limitDate = limitDate;
     }
 
@@ -205,6 +211,13 @@ public class Task {
         if (!(o instanceof Task task)) return false;
 
         return task.getId().equals(this.id);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
     }
 
 }

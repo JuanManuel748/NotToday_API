@@ -13,32 +13,28 @@ import java.util.Optional;
 @Repository
 public interface UsersTeamRepository extends JpaRepository<UsersTeam, Long> {
     @Query (
-            value = "SELECT * FROM users_teams AS ut WHERE ut.usersid = ?1 AND ut.teamsid = ?2",
+            value = "SELECT * FROM users_teams AS ut WHERE ut.user_id = ?1 AND ut.team_id = ?2",
             nativeQuery = true
     )
     Optional<UsersTeam> findByUserAndTeam(Long userId, Long teamId);
     @Query(
-            value = "SELECT * FROM users_teams AS ut WHERE ut.usersid = ?1",
+            value = "SELECT * FROM users_teams AS ut WHERE ut.user_id = ?1",
             nativeQuery = true
     )
     List<UsersTeam> findByUser(Long userId);
     @Query(
-            value = "SELECT * FROM users_teams AS ut WHERE ut.teamsid = ?1",
+            value = "SELECT * FROM users_teams AS ut WHERE ut.team_id = ?1",
             nativeQuery = true
     )
     List<UsersTeam> findByTeam(Long teamId);
     @Query(
-            value = "SELECT u.* FROM users u"
-            + "JOIN users_teams ut ON u.id = ut.usersid"
-            + "WHERE ut.teamsid = ?1",
+            value = "SELECT u.* FROM users u JOIN users_teams ut ON u.id = ut.user_id WHERE ut.team_id = ?1",
             nativeQuery = true
     )
     List<User> findUsersByTeam(Long teamid);
 
     @Query(
-            value = "SELECT t.* FROM teams t"
-            + "JOIN users_teams ut ON t.id = ut.teamsid"
-            + "WHERE ut.usersid = ?1",
+            value = "SELECT t.* FROM teams t JOIN users_teams ut ON t.id = ut.team_id WHERE ut.user_id = ?1",
             nativeQuery = true
     )
     List<Team> findTeamsByUser(Long userid);

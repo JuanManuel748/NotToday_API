@@ -55,13 +55,6 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
-    @Operation(summary = "Busca una tarea por su nombre")
-    @GetMapping("/name/{name}")
-    public ResponseEntity<List<Task>> getByName(@PathVariable String name) {
-        List<Task> tasks = taskService.findByName(name);
-        return ResponseEntity.status(HttpStatus.OK).body(tasks);
-    }
-
     @Operation(summary = "Busca tareas por su estado")
     @GetMapping("/state/{state}")
     public ResponseEntity<List<Task>> getByState(@PathVariable String state) {
