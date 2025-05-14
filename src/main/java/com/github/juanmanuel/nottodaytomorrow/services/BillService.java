@@ -1,6 +1,7 @@
 package com.github.juanmanuel.nottodaytomorrow.services;
 
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
+import com.github.juanmanuel.nottodaytomorrow.exceptions.ValidationException;
 import com.github.juanmanuel.nottodaytomorrow.models.Bill;
 import com.github.juanmanuel.nottodaytomorrow.repositories.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.Optional;
 public class BillService {
     @Autowired
     private BillRepository billRepository;
+    @Autowired
+    private BillsUserService buService;
 
     public List<Bill> getAll() throws NotFoundException {
         List<Bill> bills = billRepository.findAll();
@@ -33,7 +36,13 @@ public class BillService {
     }
 
     public Bill create(Bill bill) {
-        return billRepository.save(bill);
+        if (validate(bill)){
+            Bill saved = billRepository.save(bill);
+            buService.create(bill);
+            return saved;
+        } else {
+            return null;
+        }
     }
 
     public Bill update(Long id, Bill bill) throws NotFoundException {
@@ -98,10 +107,54 @@ public class BillService {
         }
     }
 
+    public Bill payBill(Long billId, Long userId) throws NotFoundException {
+        Optional<Bill> bill = billRepository.findById(billId);
+        if (bill.isPresent()) {
+            Bill b = bill.get();
+            if (b.getPayer().getId().equals(userId)) {
+
+                return billRepository.save(b);
+            } else {
+                throw new NotFoundException("User is not the payer of this bill", Bill.class);
+            }
+        } else {
+            throw new NotFoundException("Bill not found with id: " + billId, Bill.class);
+        }
+    }
+
     /*
     * HACER FUNCION PARA QUE AL INSERTAR UNA FACTURA,
     * SE CREEN CADA UNA PARA CADA USUARIO AUTOMATICAMENTE,
     * RECOGIENDO LOS USUARIOS DEL EQUIPO Y ASIGNANDO UN BILLUSER
     * PARA CADA UNO, DIVIENDO EL GASTO ENTRE EL NUMERO DE USUARIOS
     * */
+
+
+    private boolean validate(Bill b) {
+        boolean result = false;
+        if (b.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            if (b.getDescription() != null && !b.getDescription().isEmpty()) {
+                //if (b.getCreatedAt() != null) {
+                    if (b.getTeam().getId() != null) {
+                        if (b.getPayer().getId() != null) {
+                            result = true;
+                        } else {
+                            throw new ValidationException("Payer ID is null", b.getPayer().getName(), b);
+                        }
+                    } else {
+                        throw new ValidationException("Team ID is null", b.getTeam().getName(), b);
+                    }
+                /*} else {
+                    throw new ValidationException("CreatedAt is null", "Bill CreatedAt Date", b);
+                }*/
+            } else {
+                throw new ValidationException("Description is null or empty", b.getDescription(), b);
+            }
+        } else {
+            throw new ValidationException("Amount is null or less than 0", b.getAmount().toString(), b);
+        }
+
+
+        return result;
+    }
 }
