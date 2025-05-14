@@ -106,8 +106,6 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`bills_users` (
     `owed` DECIMAL(10,2) NOT NULL,
     `paid` DECIMAL(10,2) NULL DEFAULT 0,
     `payment_date` DATE NULL DEFAULT NULL,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`bill_id`, `user_id`),
     INDEX `fk_bills_users_users_idx` (`user_id` ASC),
     INDEX `fk_bills_users_bills_idx` (`bill_id` ASC),
@@ -131,7 +129,6 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`comments` (
     `comment` VARCHAR(255) NOT NULL,
     `comment_date` DATE NOT NULL,
     `anonymous` BOOLEAN NOT NULL DEFAULT 0,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`user_id`, `commenter_id`),
     INDEX `fk_comments_users2_idx` (`commenter_id` ASC),
     CONSTRAINT `fk_comments_users1`
