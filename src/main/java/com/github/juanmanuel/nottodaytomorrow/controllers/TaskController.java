@@ -83,4 +83,12 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
+    @Operation(summary = "Busca tareas por rango de fecha")
+    @GetMapping("/date")
+    public ResponseEntity<List<Task>> getByDate(@RequestParam String startDate, @RequestParam String endDate) {
+        List<Task> tasks = taskService.findByDateRange(startDate, endDate);
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+
+
 }

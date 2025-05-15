@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -30,4 +32,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             nativeQuery = true
     )
     List<Task> findByStatus(String creatorId);
+    @Query(
+            value = "SELECT * FROM tasks AS t WHERE t.created_at BETWEEN ?1 AND ?2",
+            nativeQuery = true
+    )
+    List<Task> findByDateRange(LocalDate startDate, LocalDate endDate);
 }
