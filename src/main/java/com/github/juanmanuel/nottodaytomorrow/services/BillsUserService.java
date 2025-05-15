@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BillsUserService {
@@ -39,11 +41,11 @@ public class BillsUserService {
     }
 
     public BillsUser getByID(Long billId, Long userId) throws NotFoundException {
-        BillsUser bu = buRepository.ind(billId, userId);
-        if (bu == null) {
-            throw new NotFoundException("BillsUser not found with billId: " + billId + " and userId: " + userId, BillsUser.class);
+        Optional<BillsUser> bu = buRepository.findByPK(billId, userId);
+        if (bu.isPresent()) {
+            return bu.get();
         }
-        return bu;
+        throw new NotFoundException("BillsUser not found with billId: " + billId + " and userId: " + userId, BillsUser.class);
     }
 
     public List<BillsUser> getAll() throws NotFoundException {
@@ -56,7 +58,18 @@ public class BillsUserService {
 
 
 
-    public BillsUser payBill(Bill b, User u) throws NotFoundException {
-        return null;
+    public boolean payBill(Long billId, Long userId) throws NotFoundException {
+        BillsUser bu = getByID(userId, billId);
+        if (bu != null) {
+            if (bu.getOwed().compareTo(bu.getPaid()) > 0) {
+                bu.setPaid(bu.getOwed());
+                bu.setPaymentDate(LocalDate.now());
+                buRepository.save(bu);
+                return true;
+            }
+            throw new NotFoundException("User has already paid the bill", BillsUser.class);
+        } else {
+            throw new NotFoundException("BillsUser not found with billId: " + billId + " and userId: " + userId, BillsUser.class);
+        }
     }
 }

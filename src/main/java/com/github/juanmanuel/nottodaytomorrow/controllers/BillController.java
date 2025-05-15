@@ -87,5 +87,15 @@ public class BillController {
         return ResponseEntity.status(HttpStatus.OK).body(bills);
     }
 
+    @Operation(summary = "Paga una factura")
+    @PostMapping("/{billId}/pay/{userId}")
+    public ResponseEntity<Void> payBill(@PathVariable Long billId, @PathVariable Long userId) {
+        if (billService.payBill(billId, userId)) {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
 
 }
