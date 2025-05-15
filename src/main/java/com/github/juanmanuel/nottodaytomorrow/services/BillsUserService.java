@@ -72,4 +72,20 @@ public class BillsUserService {
             throw new NotFoundException("BillsUser not found with billId: " + billId + " and userId: " + userId, BillsUser.class);
         }
     }
+
+    public List<BillsUser> getPaidBillsByUserId(Long userId) {
+        List<BillsUser> billsUsers = buRepository.findByUserPaid(userId);
+        if (billsUsers.isEmpty()) {
+            throw new NotFoundException("No paid bills found for user id: " + userId, BillsUser.class);
+        }
+        return billsUsers;
+    }
+
+    public List<BillsUser> getUnpaidBillsByUserId(Long userId) {
+        List<BillsUser> billsUsers = buRepository.findByUserNotPaid(userId);
+        if (billsUsers.isEmpty()) {
+            throw new NotFoundException("No unpaid bills found for user id: " + userId, BillsUser.class);
+        }
+        return billsUsers;
+    }
 }

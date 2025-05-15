@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BillService {
@@ -114,12 +115,21 @@ public class BillService {
         return buService.payBill(billId, userId);
     }
 
+    public List<Bill> getPaidBillsByUserId(Long userId) {
+        List<BillsUser> billsUsers = buService.getPaidBillsByUserId(userId);
+        if (billsUsers.isEmpty()) {
+            throw new NotFoundException("No paid bills found for user id: " + userId, Bill.class);
+        }
+        return billsUsers.stream().map(BillsUser::getBill).collect(Collectors.toList());
+    }
 
-    /* HACER FUNCION PARA QUE AL INSERTAR UNA FACTURA,
-    * SE CREEN CADA UNA PARA CADA USUARIO AUTOMATICAMENTE,
-    * RECOGIENDO LOS USUARIOS DEL EQUIPO Y ASIGNANDO UN BILLUSER
-    * PARA CADA UNO, DIVIENDO EL GASTO ENTRE EL NUMERO DE USUARIOS */
-
+    public List<Bill> getUnpaidBillsByUserId(Long userId) {
+        List<BillsUser> billsUsers = buService.getUnpaidBillsByUserId(userId);
+        if (billsUsers.isEmpty()) {
+            throw new NotFoundException("No unpaid bills found for user id: " + userId, Bill.class);
+        }
+        return billsUsers.stream().map(BillsUser::getBill).collect(Collectors.toList());
+    }
 
     private boolean validate(Bill b) {
         boolean result = false;
