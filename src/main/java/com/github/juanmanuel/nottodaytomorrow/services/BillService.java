@@ -3,11 +3,14 @@ package com.github.juanmanuel.nottodaytomorrow.services;
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.exceptions.ValidationException;
 import com.github.juanmanuel.nottodaytomorrow.models.Bill;
+import com.github.juanmanuel.nottodaytomorrow.models.BillsUser;
+import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.repositories.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -107,27 +110,15 @@ public class BillService {
         }
     }
 
-    public Bill payBill(Long billId, Long userId) throws NotFoundException {
-        Optional<Bill> bill = billRepository.findById(billId);
-        if (bill.isPresent()) {
-            Bill b = bill.get();
-            if (b.getPayer().getId().equals(userId)) {
-
-                return billRepository.save(b);
-            } else {
-                throw new NotFoundException("User is not the payer of this bill", Bill.class);
-            }
-        } else {
-            throw new NotFoundException("Bill not found with id: " + billId, Bill.class);
-        }
+    public boolean payBill(Long billId, Long userId) throws NotFoundException {
+        return buService.payBill(billId, userId);
     }
 
-    /*
-    * HACER FUNCION PARA QUE AL INSERTAR UNA FACTURA,
+
+    /* HACER FUNCION PARA QUE AL INSERTAR UNA FACTURA,
     * SE CREEN CADA UNA PARA CADA USUARIO AUTOMATICAMENTE,
     * RECOGIENDO LOS USUARIOS DEL EQUIPO Y ASIGNANDO UN BILLUSER
-    * PARA CADA UNO, DIVIENDO EL GASTO ENTRE EL NUMERO DE USUARIOS
-    * */
+    * PARA CADA UNO, DIVIENDO EL GASTO ENTRE EL NUMERO DE USUARIOS */
 
 
     private boolean validate(Bill b) {
