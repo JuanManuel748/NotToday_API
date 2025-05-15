@@ -72,10 +72,7 @@ public class CommentController {
     @Operation(summary = "Buscar comentarios del usuario dentro de un rango de fechas")
     @GetMapping("/user/{userId}/date/{beforeDate}/{afterDate}")
     public ResponseEntity<List<Comment>> getUserCommentsByDate(@PathVariable Long userId, @PathVariable String beforeDate, @PathVariable String afterDate) {
-        LocalDate before = LocalDate.parse(beforeDate);
-        LocalDate after = LocalDate.parse(afterDate);
-
-        List<Comment> comments = commentService.findByUserDateRange(userId, before, after);
+        List<Comment> comments = commentService.findByUserDateRange(userId, beforeDate, afterDate);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 

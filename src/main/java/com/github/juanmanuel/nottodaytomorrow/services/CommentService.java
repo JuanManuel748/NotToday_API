@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,12 +79,15 @@ public class CommentService {
         }
     }
 
-    public List<Comment> findByUserDateRange(Long userId, LocalDate beforeDate, LocalDate afterDate) {
+    public List<Comment> findByUserDateRange(Long userId, String beforeDateStr, String afterDateStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate beforeDate = LocalDate.parse(beforeDateStr, formatter);
+        LocalDate afterDate = LocalDate.parse(afterDateStr, formatter);
         List<Comment> comments = commentRepository.findByUserDateRange(userId, beforeDate, afterDate);
         if(!comments.isEmpty()) {
             return comments;
         } else {
-            throw new RuntimeException("No comments found for userId: " + userId + " between " + beforeDate + " and " + afterDate);
+            throw new NotFoundException("No comments found for userId: " + userId + " between " + beforeDate + " and " + afterDate, Comment.class);
         }
     }
 }
