@@ -100,13 +100,15 @@ public class BillController {
     @Operation(summary = "Buscar facturas no pagadas del usuario")
     @GetMapping("/unpaid/{userId}")
     public ResponseEntity<List<Bill>> getUnpaidBillsByUserId(@PathVariable Long userId) {
-        return null;
+        List<Bill> unpaidBills = billService.getUnpaidBillsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(unpaidBills);
     }
 
     @Operation(summary = "Buscar facturas pagadas del usuario")
     @GetMapping("/paid/{userId}")
     public ResponseEntity<List<Bill>> getPaidBillsByUserId(@PathVariable Long userId) {
-        return null;
+        List<Bill> paidBills = billService.getPaidBillsByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(paidBills);
     }
 
 
