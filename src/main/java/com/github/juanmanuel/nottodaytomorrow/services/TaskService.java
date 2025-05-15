@@ -6,6 +6,9 @@ import com.github.juanmanuel.nottodaytomorrow.repositories.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +100,26 @@ public class TaskService {
             return tasks;
         } else {
             throw new NotFoundException("Task not found with status: " + status, tasks);
+        }
+    }
+
+
+    public List<Task> findByDateRange(String startDateStr, String endDateStr) throws NotFoundException {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate startDate = LocalDate.parse(startDateStr, formatter);
+            LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+
+            List<Task> tasks = taskRepository.findByDateRange(startDate, endDate);
+
+            if (tasks.isEmpty()) {
+                throw new NotFoundException("No tasks found within the date range: " + startDateStr + " to " + endDateStr, Task.class);
+            }
+
+            return tasks;
+
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Error parsing date: " + e.getMessage());
         }
     }
 
