@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`users` (
     `email` VARCHAR(250) NOT NULL,
     `password` VARCHAR(250) NOT NULL,
     `name` VARCHAR(100) NOT NULL,
-    `pic` VARCHAR(255) NULL DEFAULT NULL,
+    `pic` LONGBLOB NULL DEFAULT NULL,
     `description` VARCHAR(255) NULL DEFAULT NULL,
     `area` VARCHAR(255) NULL DEFAULT NULL,
     UNIQUE INDEX `email_unique` (`email` ASC),
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`users` (
 CREATE TABLE IF NOT EXISTS `nottoday_db`.`teams` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
+    `image` LONGBLOB NULL
     `creation_date` DATE NOT NULL,
     PRIMARY KEY (`id`))
     ENGINE = InnoDB

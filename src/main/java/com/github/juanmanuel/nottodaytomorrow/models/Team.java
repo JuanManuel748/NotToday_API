@@ -32,6 +32,10 @@ public class Team {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
+
     @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "creation_date", nullable = false)
@@ -61,15 +65,17 @@ public class Team {
         this.name = name;
     }
 
-    public Team(Long id, String name, LocalDate creationDate) {
+    public Team(Long id, String name, LocalDate creationDate, byte[] imagen) {
         this.id = id;
         this.name = name;
+        this.image = imagen;
         this.creationDate = creationDate;
     }
 
-    public Team(Long id, String name, LocalDate creationDate, Set<Bill> bills, Set<Task> tasks, Set<UsersTeam> usersTeams) {
+    public Team(Long id, String name, byte[] imagen, LocalDate creationDate, Set<Bill> bills, Set<Task> tasks, Set<UsersTeam> usersTeams) {
         this.id = id;
         this.name = name;
+        this.image = imagen;
         this.creationDate = creationDate;
         this.bills = bills;
         this.tasks = tasks;
@@ -90,6 +96,14 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public LocalDate getCreationDate() {
@@ -129,6 +143,7 @@ public class Team {
         return "Team{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", image=" + (image != null ? "present" : "not present") +
                 ", creationDate=" + creationDate +
                 '}';
     }

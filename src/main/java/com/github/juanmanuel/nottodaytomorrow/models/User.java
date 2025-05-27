@@ -45,7 +45,7 @@ public class User {
 
     @Size(max = 255)
     @Column(name = "pic")
-    private String pic;
+    private byte[] pic;
 
     @Size(max = 255)
     @Column(name = "description")
@@ -101,7 +101,7 @@ public class User {
         this.name = name;
     }
 
-    public User(String email, String password, String name, String pic, String description, String area) {
+    public User(String email, String password, String name, byte[] pic, String description, String area) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -142,11 +142,11 @@ public class User {
         this.name = name;
     }
 
-    public String getPic() {
+    public byte[] getPic() {
         return pic;
     }
 
-    public void setPic(String pic) {
+    public void setPic(byte[] pic) {
         this.pic = pic;
     }
 
@@ -229,7 +229,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", pic='" + pic + '\'' +
+                ", pic='" + (pic != null ? "present" : "not present") + '\'' +
                 ", description='" + description + '\'' +
                 ", area='" + area + '\'' +
                 '}';
