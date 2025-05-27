@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class Team {
 
     @Lob
     @Column(name = "image")
-    private byte[] image;
+    private byte[] imagen;
 
     @NotNull
     @ColumnDefault("current_timestamp()")
@@ -68,14 +67,14 @@ public class Team {
     public Team(Long id, String name, LocalDate creationDate, byte[] imagen) {
         this.id = id;
         this.name = name;
-        this.image = imagen;
+        this.imagen = imagen;
         this.creationDate = creationDate;
     }
 
     public Team(Long id, String name, byte[] imagen, LocalDate creationDate, Set<Bill> bills, Set<Task> tasks, Set<UsersTeam> usersTeams) {
         this.id = id;
         this.name = name;
-        this.image = imagen;
+        this.imagen = imagen;
         this.creationDate = creationDate;
         this.bills = bills;
         this.tasks = tasks;
@@ -98,12 +97,12 @@ public class Team {
         this.name = name;
     }
 
-    public byte[] getImage() {
-        return image;
+    public byte[] getImagen() {
+        return imagen;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagen(byte[] image) {
+        this.imagen = image;
     }
 
     public LocalDate getCreationDate() {
@@ -143,7 +142,7 @@ public class Team {
         return "Team{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", image=" + (image != null ? "present" : "not present") +
+                ", image=" + (imagen != null ? "present" : "not present") +
                 ", creationDate=" + creationDate +
                 '}';
     }

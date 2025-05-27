@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`users` (
 CREATE TABLE IF NOT EXISTS `nottoday_db`.`teams` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
-    `image` LONGBLOB NULL
+    `imagen` LONGBLOB NULL,
     `creation_date` DATE NOT NULL,
     PRIMARY KEY (`id`))
     ENGINE = InnoDB
