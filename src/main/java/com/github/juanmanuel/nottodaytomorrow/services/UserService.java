@@ -5,8 +5,12 @@ import com.github.juanmanuel.nottodaytomorrow.models.Team;
 import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.models.UsersTeam;
 import com.github.juanmanuel.nottodaytomorrow.repositories.UserRepository;
-import com.github.juanmanuel.nottodaytomorrow.repositories.UsersTeamRepository;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,13 +18,23 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     @Autowired
     private UserRepository userRepo;
     @Autowired
     private TeamService teamService;
     @Autowired
     private UsersTeamService usersTeamService;
+
+    private final PasswordEncoder passEncoder;
+
+    @Autowired
+    public UserService(UserRepository userRepo, TeamService teamService, UsersTeamService usersTeamService, @Lazy PasswordEncoder passEncoder) {
+        this.userRepo = userRepo;
+        this.teamService = teamService;
+        this.usersTeamService = usersTeamService;
+        this.passEncoder = passEncoder;
+    }
 
     public List<User> getAll() {
         return userRepo.findAll();
@@ -35,21 +49,6 @@ public class UserService {
             throw new NotFoundException("User not found with id: " + id, user);
         }
     }
-
-    public User getByIdwTeams(Long id) throws NotFoundException {
-        Optional<User> user = userRepo.findById(id);
-        if (user.isPresent()) {
-            // Fetch the teams associated with the user
-
-
-
-            return user.get();
-        } else {
-            throw new NotFoundException("User not found with id: " + id, user);
-        }
-    }
-
-
 
     public User getByEmail(String email) throws NotFoundException {
         Optional<User> user = userRepo.findByEmail(email);
@@ -70,22 +69,25 @@ public class UserService {
     }
 
     public User create(User user) {
+        user.setPassword(passEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }
 
     public User update(Long id, User user) throws NotFoundException {
-        Optional<User> existingUser = userRepo.findById(id);
-        if (existingUser.isPresent()) {
-            User updatedUser = existingUser.get();
+        Optional<User> existingUserOptional = userRepo.findById(id);
+        if (existingUserOptional.isPresent()) {
+            User updatedUser = existingUserOptional.get();
             updatedUser.setEmail(user.getEmail());
-            updatedUser.setPassword(user.getPassword());
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                updatedUser.setPassword(passEncoder.encode(user.getPassword()));
+            }
             updatedUser.setName(user.getName());
             updatedUser.setPic(user.getPic());
             updatedUser.setDescription(user.getDescription());
             updatedUser.setArea(user.getArea());
             return userRepo.save(updatedUser);
         } else {
-            throw new NotFoundException("User not found with id: " + user.getId(), existingUser);
+            throw new NotFoundException("User not found with id: " + id, User.class);
         }
     }
 
@@ -164,4 +166,19 @@ public class UserService {
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> userOptional = userRepo.findByEmail(username);
+        if (userOptional.isEmpty()) {
+            throw new UsernameNotFoundException("User not found with email: " + username);
+        }
+        User user = userOptional.get();
+        // Por ahora, se asume que no hay roles/autoridades específicas.
+        // Si tienes roles, deberías cargarlos aquí.
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                new ArrayList<>() // Lista vacía de autoridades
+        );
+    }
 }
