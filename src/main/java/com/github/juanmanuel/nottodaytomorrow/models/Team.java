@@ -26,6 +26,12 @@ public class Team {
     @Column(name = "id", nullable = false)
     private Long id;
 
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "team_code", nullable = false, unique = true, length = 10)
+    private String teamCode;
+
     @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
@@ -60,19 +66,22 @@ public class Team {
         this.id = id;
     }
 
-    public Team(String name) {
+    public Team(String name, String teamCode) {
         this.name = name;
+        this.teamCode = teamCode;
     }
 
-    public Team(Long id, String name, LocalDate creationDate, byte[] imagen) {
+    public Team(Long id, String teamCode, String name, LocalDate creationDate, byte[] imagen) {
         this.id = id;
+        this.teamCode = teamCode;
         this.name = name;
         this.imagen = imagen;
         this.creationDate = creationDate;
     }
 
-    public Team(Long id, String name, byte[] imagen, LocalDate creationDate, Set<Bill> bills, Set<Task> tasks, Set<UsersTeam> usersTeams) {
+    public Team(Long id, String teamCode, String name, byte[] imagen, LocalDate creationDate, Set<Bill> bills, Set<Task> tasks, Set<UsersTeam> usersTeams) {
         this.id = id;
+        this.teamCode = teamCode;
         this.name = name;
         this.imagen = imagen;
         this.creationDate = creationDate;
@@ -87,6 +96,14 @@ public class Team {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTeamCode() {
+        return teamCode;
+    }
+
+    public void setTeamCode(String teamCode) {
+        this.teamCode = teamCode;
     }
 
     public String getName() {
@@ -149,6 +166,7 @@ public class Team {
 
     @Override
     public boolean equals(Object o) {
+        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Team team = (Team) o;
         return Objects.equals(id, team.id);

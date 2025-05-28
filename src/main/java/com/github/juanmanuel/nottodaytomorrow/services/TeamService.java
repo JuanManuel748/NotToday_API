@@ -31,7 +31,7 @@ public class TeamService {
             team.setId(id);
             return teamRepository.save(team);
         } else {
-            throw new RuntimeException("Team not found with id: " + id);
+            throw new NotFoundException("Team not found with id: " + id, Team.class);
         }
     }
 
@@ -40,7 +40,7 @@ public class TeamService {
             teamRepository.deleteById(id);
             return true;
         } else {
-            throw new RuntimeException("Team not found with id: " + id);
+            throw new NotFoundException("Team not found with id: " + id, Team.class);
         }
     }
 
@@ -49,7 +49,7 @@ public class TeamService {
         if (team.isPresent()) {
             return team.get();
         } else {
-            throw new RuntimeException("Team not found with id: " + id);
+            throw new NotFoundException("Team not found with id: " + id, Team.class);
         }
     }
 
@@ -68,6 +68,15 @@ public class TeamService {
             return users;
         } else {
             throw new NotFoundException("No users found for team with id: " + id, users);
+        }
+    }
+
+    public Team getByCode(String code) throws NotFoundException {
+        Optional<Team> team = teamRepository.findByTeamCode(code);
+        if (team.isPresent()) {
+            return team.get();
+        } else {
+            throw new NotFoundException("Team not found with code: " + code, Team.class);
         }
     }
 }
