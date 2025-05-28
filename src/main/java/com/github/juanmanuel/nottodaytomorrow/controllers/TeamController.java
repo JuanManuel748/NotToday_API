@@ -54,12 +54,21 @@ public class TeamController {
         return ResponseEntity.status(HttpStatus.OK).body(teams);
     }
 
+
+    @Operation(summary = "Buscar el equipo por su código")
+    @GetMapping("/code/{code}")
+    public ResponseEntity<Team> getByCode(@PathVariable String code) {
+        Team t = teamService.getByCode(code);
+        return ResponseEntity.status(HttpStatus.OK).body(t);
+    }
+
     @Operation(summary = "Buscar usuarios del equipo por su id")
     @GetMapping("/{id}/users")
     public ResponseEntity<List<User>> getUsersByTeamId(@PathVariable Long id) {
         List<User> users = teamService.getUsersByTeamId(id);
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
+
 
 
 }

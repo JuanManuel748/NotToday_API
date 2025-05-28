@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.security;
 
+import com.github.juanmanuel.nottodaytomorrow.exceptions.AuthException;
 import com.github.juanmanuel.nottodaytomorrow.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetService;
 
     private final RequestMatcher publicEndpoints = new OrRequestMatcher(
-            new AntPathRequestMatcher("/auth/**") // Se cambió a /auth/** para cubrir login y cualquier otra ruta bajo /auth
+            new AntPathRequestMatcher("/auth/**")
     );
 
     @Override
@@ -65,20 +66,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                         //log.info("JwtAuthenticationFilter: User '{}' authenticated successfully.", username);
                     } else {
-                        //log.warn("JwtAuthenticationFilter: UserDetails not found for username: {}", username);
+                        throw new AuthException("JwtAuthenticationFilter: UserDetails not found for username: " + username);
                     }
                 } else {
-                    //log.warn("JwtAuthenticationFilter: JWT validation failed. Token: {}", jwt);
+                    throw new AuthException("JwtAuthenticationFilter: JWT validation failed. Token: " + jwt);
                 }
             } else {
-                //log.trace("JwtAuthenticationFilter: No JWT found in request header for {}", request.getRequestURI());
+                throw new AuthException("JwtAuthenticationFilter: No JWT found in request header for " + request.getRequestURI());
             }
         } catch (Exception ex) {
-            //log.error("JwtAuthenticationFilter: Could not set user authentication in security context", ex);
-            // Es importante no bloquear la cadena de filtros aquí si hay una excepción,
-            // a menos que sea una excepción de autenticación que deba detener el proceso.
-            // Si la autenticación falla, SecurityContextHolder no tendrá un Authentication,
-            // y las reglas de autorización posteriores lo manejarán (por ejemplo, devolviendo 401 o 403).
+            // No lanzar AuthException aquí, solo loguear
+            System.out.println("ERROR JWT: " + ex.getMessage());
+            // Permitir que la cadena de filtros continúe
+            filterChain.doFilter(request, response);
+            return; // Importante: salir del método para que no se llame de nuevo a filterChain.doFilter
         }
 
         filterChain.doFilter(request, response);

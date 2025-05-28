@@ -60,15 +60,12 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/test-public").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-
                         .requestMatchers("/users/**").permitAll()
                         /*
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll() // Permitir registro
+                        .requestMatchers(HttpMethod.GET, "/users").permitAll() // Permitir registro
                         .requestMatchers("/users/{id}/**").authenticated() // Proteger otros endpoints de usuario
                         /* */
-
-                        .requestMatchers("/habits/**").authenticated()
-                        .anyRequest().authenticated()
+                        .anyRequest().authenticated() // Proteger todos los demás endpoints
                 )
                 // .anonymous(anonymous -> anonymous.disable()) // Deshabilitar acceso anónimo si no lo necesitas
                 .httpBasic(AbstractHttpConfigurer::disable) // Correcto, mantener deshabilitado
