@@ -27,7 +27,7 @@ public class BillsUserService {
 
     public List<BillsUser> create(Bill b) throws NotFoundException {
         List<BillsUser> resultList = new ArrayList<>();
-        List<User> users = teamService.getUsersByTeamId(b.getTeam().getId());
+        List<User> users = userService.getUsersByTeamId(b.getTeam().getId());
         BigDecimal amountperUser = b.getAmount().divide(new BigDecimal(users.size()), BigDecimal.ROUND_HALF_UP);
         for (User u: users) {
             BillsUser bu = new BillsUser(b, u, amountperUser, new BigDecimal("0.0"));

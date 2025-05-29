@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -31,11 +32,18 @@ public class TaskService {
         if (task.isPresent()) {
             return task.get();
         } else {
-            throw new RuntimeException("Task not found with id: " + id);
+            throw new NotFoundException("Task not found with id: " + id, Task.class);
         }
     }
 
     public Task create(Task task) {
+        if (task.getCreatedAt() == null) {
+            task.setCreatedAt(LocalDate.now());
+        }
+        if (task.getLimitDate() == null) {
+            System.out.println("\nNo limit date set, defaulting to 7 days from now.\n\n");
+            task.setLimitDate(LocalDate.now().plusDays(7)); // Default to 7 days from now if no limit date is set
+        }
         return taskRepository.save(task);
     }
 
@@ -52,7 +60,7 @@ public class TaskService {
             updatedTask.setAssigned(task.getAssigned());
             return taskRepository.save(updatedTask);
         } else {
-            throw new RuntimeException("Task not found with id: " + id);
+            throw new NotFoundException("Task not found with id: " + id, Task.class);
         }
     }
 
@@ -62,7 +70,7 @@ public class TaskService {
             taskRepository.delete(task.get());
             return true;
         } else {
-            throw new RuntimeException("Task not found with id: " + id);
+            throw new NotFoundException("Task not found with id: " + id, Task.class);
         }
     }
 

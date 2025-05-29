@@ -62,12 +62,21 @@ public class TeamService {
         }
     }
 
-    public List<User> getUsersByTeamId(Long id) throws NotFoundException {
-        List<User> users = usrtmRepository.findUsersByTeam(id);
-        if (!users.isEmpty()) {
-            return users;
+    public List<Team> getTeamsByUser(Long userId) throws NotFoundException {
+        List<Team> teams = usrtmRepository.findTeamsByUser(userId);
+        if (!teams.isEmpty()) {
+            return teams;
         } else {
-            throw new NotFoundException("No users found for team with id: " + id, users);
+            throw new NotFoundException("No users found for team with id: " + userId, teams);
+        }
+    }
+
+    public String getUserRoleInTeam(Long teamId, Long userId) throws NotFoundException {
+        Optional<String> role = usrtmRepository.findRoleByUserAndTeam(userId, teamId);
+        if (role.isPresent()) {
+            return role.get();
+        } else {
+            throw new NotFoundException("No role found for user with id: " + userId + " in team with id: " + teamId, Team.class);
         }
     }
 

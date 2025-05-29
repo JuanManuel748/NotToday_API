@@ -70,18 +70,12 @@ public class UserController {
     }
 
     @Operation(summary = "Buscar equipos del usuario por su email")
-    @GetMapping("/email/{email}/teams")
-    public ResponseEntity<List<Team>> getUserTeamsByEmail(@PathVariable String email) {
-        List<Team> teams = userService.getTeamsByUserEmail(email);
-        return ResponseEntity.status(HttpStatus.OK).body(teams);
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<User>> getUsersByTeam(@PathVariable Long teamId) {
+        List<User> users = userService.getUsersByTeamId(teamId);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
-
-    @Operation(summary = "Buscar equipos del usuario por su id")
-    @GetMapping("/{userId}/teams")
-    public ResponseEntity<List<Team>> getUserTeamsByEmail(@PathVariable Long userId) {
-        List<Team> teams = userService.getTeamsByUserId(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(teams);
-    }
+    
 
     @Operation(summary = "Añadir equipo al usuario por su id")
     @PostMapping("/{userId}/teams/{teamId}")

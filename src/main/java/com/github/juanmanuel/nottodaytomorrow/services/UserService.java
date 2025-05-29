@@ -102,26 +102,15 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public List<Team> getTeamsByUserEmail(String email) throws NotFoundException {
-        User user = getByEmail(email);
-        List<Team> teams = usersTeamService.getTeamsByUserId(user.getId());
-        if (!teams.isEmpty()) {
-            return teams;
+    public List<User> getUsersByTeamId(Long teamId) throws NotFoundException {
+        List<User> users = usersTeamService.getUsersByTeamId(teamId);
+        if (users.isEmpty()) {
+            throw new NotFoundException("No users found for team with id: " + teamId, users);
         } else {
-            throw new NotFoundException("No teams found for user: " + email, user);
+            return users;
         }
-
     }
 
-    public List<Team> getTeamsByUserId(Long userId) throws NotFoundException {
-        List<Team> teams = usersTeamService.getTeamsByUserId(userId);
-        if (!teams.isEmpty()) {
-            return teams;
-        } else {
-            throw new NotFoundException("No teams found for user: " + userId, User.class);
-        }
-
-    }
 
     public User addTeamToUser(Long userId, Long teamId, String role) throws NotFoundException {
         User user = getById(userId);

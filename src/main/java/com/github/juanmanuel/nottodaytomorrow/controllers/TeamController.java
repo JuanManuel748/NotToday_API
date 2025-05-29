@@ -63,10 +63,17 @@ public class TeamController {
     }
 
     @Operation(summary = "Buscar usuarios del equipo por su id")
-    @GetMapping("/{id}/users")
-    public ResponseEntity<List<User>> getUsersByTeamId(@PathVariable Long id) {
-        List<User> users = teamService.getUsersByTeamId(id);
-        return ResponseEntity.status(HttpStatus.OK).body(users);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Team>> getTeamsByUser(@PathVariable Long userId) {
+        List<Team> teams = teamService.getTeamsByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(teams);
+    }
+
+    @Operation(summary = "Buscar rol del usuario en el equipo")
+    @GetMapping("/{teamId}/user/{userId}/role")
+    public ResponseEntity<String> getUserRoleInTeam(@PathVariable Long teamId, @PathVariable Long userId) {
+        String role = teamService.getUserRoleInTeam(teamId, userId);
+        return ResponseEntity.status(HttpStatus.OK).body(role);
     }
 
 
