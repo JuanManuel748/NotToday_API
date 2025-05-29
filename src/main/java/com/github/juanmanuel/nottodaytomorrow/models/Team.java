@@ -38,7 +38,7 @@ public class Team {
     private String name;
 
     @Lob
-    @Column(name = "image")
+    @Column(name = "imagen")
     private byte[] imagen;
 
     @NotNull

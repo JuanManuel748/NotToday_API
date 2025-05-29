@@ -38,4 +38,9 @@ public interface UsersTeamRepository extends JpaRepository<UsersTeam, Long> {
             nativeQuery = true
     )
     List<Team> findTeamsByUser(Long userid);
+    @Query(
+                value = "SELECT ut.role FROM users_teams AS ut WHERE ut.user_id = ?1 AND ut.team_id = ?2",
+                nativeQuery = true
+    )
+    Optional<String> findRoleByUserAndTeam(Long userId, Long teamId);
 }

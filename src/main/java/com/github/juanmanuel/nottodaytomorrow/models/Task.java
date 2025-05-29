@@ -10,8 +10,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -35,7 +35,10 @@ public class Task {
 
     @NotNull
     @Column(name = "limit_date", nullable = false)
-    private LocalDateTime limitDate;
+    private LocalDate limitDate;
+    @NotNull
+    @Column(name = "limit_hour", nullable = false)
+    private LocalTime limitHour;
 
     @Size(max = 100)
     @NotNull
@@ -63,7 +66,7 @@ public class Task {
     @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDate createdAt;
 
 
     public Task() {}
@@ -72,44 +75,48 @@ public class Task {
         this.id = id;
     }
 
-    public Task(Long id, String name, String description, LocalDateTime date, Long teamId, Long creatorId, Long assignedId) {
+    public Task(Long id, String name, String description, LocalDate date, LocalTime hour, Long teamId, Long creatorId, Long assignedId) {
         this.name = name;
         this.description = description;
         this.limitDate = date;
+        this.limitHour = hour;
         this.state = "PENDING";
         this.team = new Team(teamId);
         this.creator = new User(creatorId);
         this.assigned = new User(assignedId);
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDate.now();
     }
-    public Task(Long id, String name, String description, LocalDateTime date, String state, Long teamId, Long creatorId, Long assignedId) {
+    public Task(Long id, String name, String description, LocalDate date, LocalTime hour, String state, Long teamId, Long creatorId, Long assignedId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
+        this.limitHour = hour;
         this.state = state;
         this.team = new Team(teamId);
         this.creator = new User(creatorId);
         this.assigned = new User(assignedId);
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDate.now();
     }
 
-    public Task(Long id, String name, String description, LocalDateTime date, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+    public Task(Long id, String name, String description, LocalDate date, LocalTime hour, Long teamId, Long creatorId, Long assignedId, LocalDate createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
+        this.limitHour = hour;
         this.state = "PENDING";
         this.team = new Team(teamId);
         this.creator = new User(creatorId);
         this.assigned = new User(assignedId);
         this.createdAt = createdAt;
     }
-    public Task(Long id, String name, String description, LocalDateTime date, String state, Long teamId, Long creatorId, Long assignedId, Instant createdAt) {
+    public Task(Long id, String name, String description, LocalDate date, LocalTime hour, String state, Long teamId, Long creatorId, Long assignedId, LocalDate createdAt) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.limitDate = date;
+        this.limitHour = hour;
         this.state = state;
         this.team = new Team(teamId);
         this.creator = new User(creatorId);
@@ -142,12 +149,20 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDateTime getLimitDate() {
+    public LocalDate getLimitDate() {
         return limitDate;
     }
 
-    public void setLimitDate(LocalDateTime limitDate) {
+    public void setLimitDate(LocalDate limitDate) {
         this.limitDate = limitDate;
+    }
+
+    public LocalTime getLimitHour() {
+        return limitHour;
+    }
+
+    public void setLimitHour(LocalTime limitHour) {
+        this.limitHour = limitHour;
     }
 
     public String getState() {
@@ -182,11 +197,11 @@ public class Task {
         this.assigned = assigned;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -197,6 +212,7 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", limitDate=" + limitDate +
+                ", limitHour=" + limitHour +
                 ", state='" + state + '\'' +
                 ", team=" + team.getId() +
                 ", creator=" + creator.getId() +
@@ -216,7 +232,7 @@ public class Task {
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDate.now();
         }
     }
 
