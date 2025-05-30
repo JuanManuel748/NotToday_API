@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
@@ -34,8 +35,10 @@ public class Task {
     private String description;
 
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "limit_date", nullable = false)
     private LocalDate limitDate;
+
     @NotNull
     @Column(name = "limit_hour", nullable = false)
     private LocalTime limitHour;
@@ -65,6 +68,7 @@ public class Task {
 
     @NotNull
     @ColumnDefault("current_timestamp()")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "created_at", nullable = false)
     private LocalDate createdAt;
 

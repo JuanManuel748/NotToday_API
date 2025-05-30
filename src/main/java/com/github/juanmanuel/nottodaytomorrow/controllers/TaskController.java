@@ -20,6 +20,7 @@ public class TaskController {
     @Operation(summary = "Crea una tarea")
     @PostMapping
     public ResponseEntity<Task> create(@RequestBody Task task) {
+        System.out.println("\nCreating task: " + task + "\n\n");
         Task t = taskService.create(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(t);
     }
