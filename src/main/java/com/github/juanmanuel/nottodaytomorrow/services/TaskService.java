@@ -44,6 +44,7 @@ public class TaskService {
             System.out.println("\nNo limit date set, defaulting to 7 days from now.\n\n");
             task.setLimitDate(LocalDate.now().plusDays(7)); // Default to 7 days from now if no limit date is set
         }
+        System.out.println("\nCreating task: " + task + "\n\n");
         return taskRepository.save(task);
     }
 
