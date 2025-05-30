@@ -37,5 +37,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             value = "SELECT * FROM tasks AS t WHERE t.created_at BETWEEN ?1 AND ?2",
             nativeQuery = true
     )
-    List<Task> findByDateRange(LocalDate startDate, LocalDate endDate);
+    List<Task> findByDateRange(LocalDateTime startDate, LocalDateTime endDate);
 }
