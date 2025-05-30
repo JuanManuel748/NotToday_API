@@ -37,14 +37,6 @@ public class TaskService {
     }
 
     public Task create(Task task) {
-        if (task.getCreatedAt() == null) {
-            task.setCreatedAt(LocalDate.now());
-        }
-        if (task.getLimitDate() == null) {
-            System.out.println("\nNo limit date set, defaulting to 7 days from now.\n\n");
-            task.setLimitDate(LocalDate.now().plusDays(7)); // Default to 7 days from now if no limit date is set
-        }
-        System.out.println("\nCreating task: " + task + "\n\n");
         return taskRepository.save(task);
     }
 
@@ -115,9 +107,9 @@ public class TaskService {
 
     public List<Task> findByDateRange(String startDateStr, String endDateStr) throws NotFoundException {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate startDate = LocalDate.parse(startDateStr, formatter);
-            LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+            LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
+            LocalDateTime endDate = LocalDateTime.parse(endDateStr, formatter);
 
             List<Task> tasks = taskRepository.findByDateRange(startDate, endDate);
 
