@@ -68,17 +68,18 @@ public class TaskService {
     }
 
 
-    public List<Task> findByCreator(Long creatorId) throws NotFoundException {
-        List<Task> tasks = taskRepository.findByCreator(creatorId);
-        if (!tasks.isEmpty()) {
-            return tasks;
-        } else {
-            throw new NotFoundException("Task not found with creator id: " + creatorId, tasks);
-        }
-    }
 
     public List<Task> findByAssigned(Long assignedId) throws NotFoundException {
         List<Task> tasks = taskRepository.findByAssigned(assignedId);
+        if (!tasks.isEmpty()) {
+            return tasks;
+        } else {
+            throw new NotFoundException("Task not found with assigned id: " + assignedId, tasks);
+        }
+    }
+
+    public List<Task> findByAssignedNotComp(Long assignedId) throws NotFoundException {
+        List<Task> tasks = taskRepository.findByAssignedNotComp(assignedId);
         if (!tasks.isEmpty()) {
             return tasks;
         } else {
@@ -94,33 +95,21 @@ public class TaskService {
             throw new NotFoundException("Task not found with team id: " + teamId, tasks);
         }
     }
+    public List<Task> findByTeamNotCompleted(Long teamId) throws NotFoundException {
+        List<Task> tasks = taskRepository.findByTeamNotCompleted(teamId);
+        if (!tasks.isEmpty()) {
+            return tasks;
+        } else {
+            throw new NotFoundException("Task not found with team id: " + teamId, tasks);
+        }
+    }
 
-    public List<Task> findByStatus(String status) throws NotFoundException {
-        List<Task> tasks = taskRepository.findByStatus(status);
+    public List<Task> findByStatus(Long teamId, String status) throws NotFoundException {
+        List<Task> tasks = taskRepository.findByStatus(teamId, status);
         if (!tasks.isEmpty()) {
             return tasks;
         } else {
             throw new NotFoundException("Task not found with status: " + status, tasks);
-        }
-    }
-
-
-    public List<Task> findByDateRange(String startDateStr, String endDateStr) throws NotFoundException {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDateTime startDate = LocalDateTime.parse(startDateStr, formatter);
-            LocalDateTime endDate = LocalDateTime.parse(endDateStr, formatter);
-
-            List<Task> tasks = taskRepository.findByDateRange(startDate, endDate);
-
-            if (tasks.isEmpty()) {
-                throw new NotFoundException("No tasks found within the date range: " + startDateStr + " to " + endDateStr, Task.class);
-            }
-
-            return tasks;
-
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException("Error parsing date: " + e.getMessage());
         }
     }
 
