@@ -56,40 +56,42 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
-    @Operation(summary = "Busca tareas por su estado")
-    @GetMapping("/state/{state}")
-    public ResponseEntity<List<Task>> getByState(@PathVariable String state) {
-        List<Task> tasks = taskService.findByStatus(state);
-        return ResponseEntity.status(HttpStatus.OK).body(tasks);
-    }
-
-    @Operation(summary = "Busca tareas por su creador")
-    @GetMapping("/creator/{creatorId}")
-    public ResponseEntity<List<Task>> getByCreator(@PathVariable Long creatorId) {
-        List<Task> tasks = taskService.findByCreator(creatorId);
-        return ResponseEntity.status(HttpStatus.OK).body(tasks);
-    }
 
     @Operation(summary = "Busca tareas por su usuario asignado")
-    @GetMapping("/assigned/{assignedId}")
+    @GetMapping("/assigned/{assignedId}/all")
     public ResponseEntity<List<Task>> getByAssigned(@PathVariable Long assignedId) {
         List<Task> tasks = taskService.findByAssigned(assignedId);
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
+    @Operation(summary = "Busca tareas no completadas por su usuario asignado")
+    @GetMapping("/assigned/{assignedId}")
+    public ResponseEntity<List<Task>> getByAssignedNotComp(@PathVariable Long assignedId) {
+        List<Task> tasks = taskService.findByAssignedNotComp(assignedId);
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+
     @Operation(summary = "Busca tareas por su equipo")
-    @GetMapping("/team/{teamId}")
+    @GetMapping("/team/{teamId}/all")
     public ResponseEntity<List<Task>> getByTeam(@PathVariable Long teamId) {
         List<Task> tasks = taskService.findByTeam(teamId);
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
-    @Operation(summary = "Busca tareas por rango de fecha")
-    @GetMapping("/date")
-    public ResponseEntity<List<Task>> getByDate(@RequestParam String startDate, @RequestParam String endDate) {
-        List<Task> tasks = taskService.findByDateRange(startDate, endDate);
+    @Operation(summary = "Busca tareas sin completar por su equipo")
+    @GetMapping("/team/{teamId}")
+    public ResponseEntity<List<Task>> getByTeamNotCompleted(@PathVariable Long teamId) {
+        List<Task> tasks = taskService.findByTeamNotCompleted(teamId);
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
+
+    @Operation(summary = "Busca tareas por su estado")
+    @GetMapping("/team/{teamId}/state/{state}")
+    public ResponseEntity<List<Task>> getByState(@PathVariable Long teamId, @PathVariable String state) {
+        List<Task> tasks = taskService.findByStatus(teamId, state);
+        return ResponseEntity.status(HttpStatus.OK).body(tasks);
+    }
+
 
 
 }
