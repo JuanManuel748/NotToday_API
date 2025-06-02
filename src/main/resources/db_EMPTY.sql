@@ -144,3 +144,50 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`comments` (
         ON UPDATE CASCADE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `nottoday_db`.`friendships` (
+    `user_id1` BIGINT NOT NULL,
+    `user_id2` BIGINT NOT NULL,
+    `status` VARCHAR(50) NOT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`user_id1`, `user_id2`),
+    INDEX `fk_friendships_users1_idx` (`user_id1` ASC),
+    INDEX `fk_friendships_users2_idx` (`user_id2` ASC),
+    CONSTRAINT `fk_friendships_users1`
+    FOREIGN KEY (`user_id1`)
+    REFERENCES `nottoday_db`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_friendships_users2`
+    FOREIGN KEY (`user_id2`)
+    REFERENCES `nottoday_db`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    CONSTRAINT `check_user_order` CHECK (`user_id1` < `user_id2`) -- Opcional, para evitar duplicados si la amistad es simétrica
+    )
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `nottoday_db`.`messages` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `sender_id` BIGINT NOT NULL,
+    `receiver_id` BIGINT NOT NULL,
+    `content` TEXT NOT NULL,
+    `sent_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `read_at` DATETIME NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `fk_messages_sender_idx` (`sender_id` ASC),
+    INDEX `fk_messages_receiver_idx` (`receiver_id` ASC),
+    CONSTRAINT `fk_messages_sender`
+    FOREIGN KEY (`sender_id`)
+    REFERENCES `nottoday_db`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_messages_receiver`
+    FOREIGN KEY (`receiver_id`)
+    REFERENCES `nottoday_db`.`users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+    )
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8;
