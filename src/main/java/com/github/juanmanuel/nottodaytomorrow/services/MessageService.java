@@ -1,5 +1,7 @@
 package com.github.juanmanuel.nottodaytomorrow.services;
 
+import com.github.juanmanuel.nottodaytomorrow.models.Friendship;
+import com.github.juanmanuel.nottodaytomorrow.models.FriendshipId;
 import com.github.juanmanuel.nottodaytomorrow.models.Message;
 import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.repositories.MessageRepository;
@@ -43,23 +45,23 @@ public class MessageService {
         User receiver = findUserById(receiverId);
 
         // Opcional: Verificar si son amigos antes de permitir el mensaje
-        // FriendshipId friendshipId = new FriendshipId(senderId, receiverId);
-        // Optional<Friendship> friendshipOpt = friendshipRepository.findById(friendshipId);
-        // if (friendshipOpt.isEmpty() || !FriendshipService.STATUS_ACCEPTED.equals(friendshipOpt.get().getStatus())) {
-        //     throw new IllegalStateException("Solo puedes enviar mensajes a tus amigos.");
-        // }
+         FriendshipId friendshipId = new FriendshipId(senderId, receiverId);
+         Optional<Friendship> friendshipOpt = friendshipRepository.findById(friendshipId);
+         if (friendshipOpt.isEmpty() || !FriendshipService.STATUS_ACCEPTED.equals(friendshipOpt.get().getStatus())) {
+             throw new IllegalStateException("Solo puedes enviar mensajes a tus amigos.");
+         }
         // Opcional: Verificar si alguno ha bloqueado al otro
-        // if (friendshipOpt.isPresent()) {
-        //    Friendship f = friendshipOpt.get();
-        //    if ((f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER1) && f.getUser1().getId().equals(senderId)) ||
-        //        (f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER2) && f.getUser2().getId().equals(senderId))) {
-        //        throw new IllegalStateException("No puedes enviar un mensaje porque has bloqueado a este usuario.");
-        //    }
-        //    if ((f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER1) && f.getUser1().getId().equals(receiverId)) ||
-        //        (f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER2) && f.getUser2().getId().equals(receiverId))) {
-        //        throw new IllegalStateException("No puedes enviar un mensaje a un usuario que te ha bloqueado.");
-        //    }
-        // }
+         if (friendshipOpt.isPresent()) {
+            Friendship f = friendshipOpt.get();
+            if ((f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER1) && f.getUser1().getId().equals(senderId)) ||
+                (f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER2) && f.getUser2().getId().equals(senderId))) {
+                throw new IllegalStateException("No puedes enviar un mensaje porque has bloqueado a este usuario.");
+            }
+            if ((f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER1) && f.getUser1().getId().equals(receiverId)) ||
+                (f.getStatus().equals(FriendshipService.STATUS_BLOCKED_BY_USER2) && f.getUser2().getId().equals(receiverId))) {
+                throw new IllegalStateException("No puedes enviar un mensaje a un usuario que te ha bloqueado.");
+            }
+         }
 
 
         Message message = new Message(sender, receiver, content);

@@ -65,6 +65,8 @@ public class AuthConfig {
                         .requestMatchers("/tasks/**").permitAll()
                         .requestMatchers("/bills/**").permitAll()
                         .requestMatchers("/comments/**").permitAll()
+                        .requestMatchers("/friendships/**").permitAll()
+                        .requestMatchers("/messages/**").permitAll()
                         /*
                         .requestMatchers(HttpMethod.GET, "/users").permitAll() // Permitir registro
                         .requestMatchers("/users/{id}/**").authenticated() // Proteger otros endpoints de usuario

@@ -18,23 +18,43 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-
     @PostMapping("/send")
-    public ResponseEntity<Message> sendMessage(@RequestBody Message msg) {
+    public ResponseEntity<?> sendMessage(@RequestBody Message msg) {
         try {
+            // Validación básica para evitar NPE si la deserialización falla parcialmente
+            // La causa raíz de la deserialización (msg.getSender() siendo null) debe ser arreglada en los modelos Message/User.
+            if (msg == null) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el objeto mensaje es nulo.");
+            }
+            if (msg.getSender() == null) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el remitente es nulo.");
+            }
+            if (msg.getSender().getId() == null) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el ID del remitente es nulo.");
+            }
+            if (msg.getReceiver() == null) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el destinatario es nulo.");
+            }
+            if (msg.getReceiver().getId() == null) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el ID del destinatario es nulo.");
+            }
+            if (msg.getContent() == null || msg.getContent().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Solicitud inválida: el contenido del mensaje está vacío o es nulo.");
+            }
+
             Message message = messageService.sendMessage(msg.getSender().getId(), msg.getReceiver().getId(), msg.getContent());
             return ResponseEntity.status(HttpStatus.CREATED).body(message);
-        } catch (NotFoundException e) {
-            throw new NotFoundException("Sender or receiver not found", Message.class);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            // Loggear la excepción 'e' es una buena práctica aquí.
+            // Considera si quieres exponer e.getMessage() al cliente.
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error inesperado al enviar el mensaje.");
         }
     }
 
-    @GetMapping("/conversation")
-    public ResponseEntity<List<Message>> getConversation(@RequestParam Long userId1, @RequestParam Long userId2) {
+    @GetMapping("/{userId1}/{userId2}")
+    public ResponseEntity<List<Message>> getConversation(@PathVariable Long userId1, @PathVariable Long userId2) {
         try {
             List<Message> conversation = messageService.getConversation(userId1, userId2);
             return ResponseEntity.ok(conversation);
@@ -43,8 +63,8 @@ public class MessageController {
         }
     }
 
-    @PostMapping("/{messageId}/read")
-    public ResponseEntity<Message> markMessageAsRead(@PathVariable Long messageId, @RequestParam Long readerId) {
+    @PostMapping("/{messageId}/{readerId}/read")
+    public ResponseEntity<Message> markMessageAsRead(@PathVariable Long messageId, @PathVariable Long readerId) {
         try {
             Optional<Message> message = messageService.markMessageAsRead(messageId, readerId);
             return message.isPresent() ? ResponseEntity.ok(message.get()) : ResponseEntity.notFound().build();
