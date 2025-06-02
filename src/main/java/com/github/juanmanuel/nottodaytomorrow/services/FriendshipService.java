@@ -4,13 +4,13 @@ import com.github.juanmanuel.nottodaytomorrow.models.Friendship;
 import com.github.juanmanuel.nottodaytomorrow.models.FriendshipId;
 import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.repositories.FriendshipRepository;
-import com.github.juanmanuel.nottodaytomorrow.repositories.UserRepository; // Asegúrate de tener este repositorio
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -209,5 +209,21 @@ public class FriendshipService {
         if (userId1.equals(userId2)) return Optional.empty();
         FriendshipId friendshipId = new FriendshipId(userId1, userId2);
         return friendshipRepository.findById(friendshipId);
+    }
+
+    public List<User> getBlockedUsers(Long blockerId) {
+        // Validar que el usuario blockerId existe
+        userService.getById(blockerId); // Esto lanzará EntityNotFoundException si no existe
+
+        List<User> blockedByBlockerAsUser1 = friendshipRepository.findBlockedUsersWhereBlockerIsUser1(blockerId);
+        List<User> blockedByBlockerAsUser2 = friendshipRepository.findBlockedUsersWhereBlockerIsUser2(blockerId);
+
+        // Combinar las dos listas
+        // Usar Stream para evitar duplicados si fuera posible (aunque aquí no debería haberlos)
+        // y para una forma más funcional de combinar.
+        List<User> allBlockedUsers = new ArrayList<>(blockedByBlockerAsUser1);
+        allBlockedUsers.addAll(blockedByBlockerAsUser2);
+
+        return allBlockedUsers;
     }
 }
