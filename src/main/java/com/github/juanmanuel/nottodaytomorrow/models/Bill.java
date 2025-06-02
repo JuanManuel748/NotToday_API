@@ -2,6 +2,7 @@ package com.github.juanmanuel.nottodaytomorrow.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,7 +14,10 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -51,11 +55,11 @@ public class Bill {
     @NotNull
     @ColumnDefault("current_timestamp()")
     @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
+    private LocalDate createdAt;
 
     @OneToMany(mappedBy = "bill")
-    @JsonIgnore
-    private Set<BillsUser> billsUsers = new LinkedHashSet<>();
+    @JsonManagedReference
+    private List<BillsUser> billsUsers = new ArrayList<>();
 
     public Bill() {}
 
@@ -68,10 +72,10 @@ public class Bill {
         this.description = description;
         this.team = team;
         this.payer = payer;
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDate.now();
     }
 
-    public Bill(BigDecimal amount, String description, Team team, User payer, Instant createdAt) {
+    public Bill(BigDecimal amount, String description, Team team, User payer, LocalDate createdAt) {
         this.amount = amount;
         this.description = description;
         this.team = team;
@@ -85,10 +89,10 @@ public class Bill {
         this.description = description;
         this.team = team;
         this.payer = payer;
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDate.now();
     }
 
-    public Bill(Long id, BigDecimal amount, String description, Team team, User payer, Instant createdAt) {
+    public Bill(Long id, BigDecimal amount, String description, Team team, User payer, LocalDate createdAt) {
         this.id = id;
         this.amount = amount;
         this.description = description;
@@ -137,19 +141,19 @@ public class Bill {
         this.payer = payer;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Set<BillsUser> getBillsUsers() {
+    public List<BillsUser> getBillsUsers() {
         return billsUsers;
     }
 
-    public void setBillsUsers(Set<BillsUser> billsUsers) {
+    public void setBillsUsers(List<BillsUser> billsUsers) {
         this.billsUsers = billsUsers;
     }
 
@@ -162,6 +166,7 @@ public class Bill {
                 ", team=" + team.getId() +
                 ", payer=" + payer.getId() +
                 ", createdAt=" + createdAt +
+                ", billsUsers=" + (billsUsers != null ? billsUsers.size() : 0) +
                 '}';
     }
 
@@ -176,14 +181,14 @@ public class Bill {
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDate.now();
         }
     }
 
     @PreUpdate
     protected void onUpdate() {
         if (createdAt == null) {
-            createdAt = Instant.now();
+            createdAt = LocalDate.now();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.*;
@@ -28,6 +29,7 @@ public class BillsUser {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "bill_id", nullable = false)
+    @JsonBackReference
     private Bill bill;
 
     @MapsId("userId")

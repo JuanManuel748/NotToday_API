@@ -43,7 +43,7 @@ public class User {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Size(max = 255)
+    @Lob
     @Column(name = "pic")
     private byte[] pic;
 
@@ -82,6 +82,22 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<UsersTeam> usersTeams = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Friendship> friendships1 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Friendship> friendships2 = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Message> sentMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Message> receivedMessages = new ArrayList<>();
 
 
     public User() {}
@@ -220,6 +236,38 @@ public class User {
 
     public void setUsersTeams(List<UsersTeam> usersTeams) {
         this.usersTeams = usersTeams;
+    }
+
+    public List<Friendship> getFriendships1() {
+        return friendships1;
+    }
+
+    public void setFriendships1(List<Friendship> friendships1) {
+        this.friendships1 = friendships1;
+    }
+
+    public List<Friendship> getFriendships2() {
+        return friendships2;
+    }
+
+    public void setFriendships2(List<Friendship> friendships2) {
+        this.friendships2 = friendships2;
+    }
+
+    public List<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public void setSentMessages(List<Message> sentMessages) {
+        this.sentMessages = sentMessages;
+    }
+
+    public List<Message> getReceivedMessages() {
+        return receivedMessages;
+    }
+
+    public void setReceivedMessages(List<Message> receivedMessages) {
+        this.receivedMessages = receivedMessages;
     }
 
     @Override

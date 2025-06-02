@@ -30,4 +30,9 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             nativeQuery = true
     )
     List<Bill> findByPayer(Long payerId);
+    @Query(
+            value = "SELECT * FROM bills AS b WHERE b.team_id = ?1 AND b.payer_id = ?2",
+            nativeQuery = true
+    )
+    List<Bill> findByTeamAndPayer(Long teamId, Long payerId);
 }

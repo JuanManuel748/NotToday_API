@@ -19,6 +19,11 @@ public interface BillsUserRepository extends JpaRepository<BillsUser, BillsUserI
     )
     Optional<BillsUser> findByPK(Long userId, Long billId);
     @Query(
+            value = "SELECT * FROM bills_users AS bu WHERE bu.bill_id = ?1",
+            nativeQuery = true
+    )
+    List<BillsUser> findByBill(Long billId);
+    @Query(
             value = "SELECT * FROM bills_users AS bu WHERE bu.user_id = ?1 AND bu.owed > bu.paid",
             nativeQuery = true
     )

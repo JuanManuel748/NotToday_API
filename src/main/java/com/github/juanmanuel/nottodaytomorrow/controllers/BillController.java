@@ -48,10 +48,24 @@ public class BillController {
         return ResponseEntity.status(HttpStatus.OK).body(bill);
     }
 
+    @Operation(summary = "Busca una factura por su id con detalles")
+    @GetMapping("/{id}/details")
+    public ResponseEntity<Bill> getByIdwDetails(@PathVariable Long id) {
+        Bill bill = billService.getByIdwDetails(id);
+        return ResponseEntity.status(HttpStatus.OK).body(bill);
+    }
+
     @Operation(summary = "Busca todas las facturas")
     @GetMapping
     public ResponseEntity<List<Bill>> getAll() {
         List<Bill> bills = billService.getAll();
+        return ResponseEntity.status(HttpStatus.OK).body(bills);
+    }
+
+    @Operation(summary = "Busca todas las facturas con detalles")
+    @GetMapping("/details")
+    public ResponseEntity<List<Bill>> getAllwDetails() {
+        List<Bill> bills = billService.getAllwDetails();
         return ResponseEntity.status(HttpStatus.OK).body(bills);
     }
 
@@ -73,10 +87,24 @@ public class BillController {
         return ResponseEntity.status(HttpStatus.OK).body(bills);
     }
 
-    @Operation(summary = "Busca facturas por su grupo")
-    @GetMapping("/teams/{teamId}")
+    @Operation(summary = "Busca facturas por su grupo sin terminar de pagar")
+    @GetMapping("/team/{teamId}")
     public ResponseEntity<List<Bill>> getByTeamId(@PathVariable Long teamId) {
         List<Bill> bills = billService.findByTeam(teamId);
+        return ResponseEntity.status(HttpStatus.OK).body(bills);
+    }
+
+    @Operation(summary = "Busca facturas completamente pagadas por su grupo")
+    @GetMapping("/team/{teamId}/paid")
+    public ResponseEntity<List<Bill>> getByTeamIdPaid(@PathVariable Long teamId) {
+        List<Bill> bills = billService.findByTeamPaid(teamId);
+        return ResponseEntity.status(HttpStatus.OK).body(bills);
+    }
+
+    @Operation(summary = "Busca facturas por su grupo incluyendo pagadas")
+    @GetMapping("/team/{teamId}/all")
+    public ResponseEntity<List<Bill>> getByTeamIdAll(@PathVariable Long teamId) {
+        List<Bill> bills = billService.findByTeamAll(teamId);
         return ResponseEntity.status(HttpStatus.OK).body(bills);
     }
 
