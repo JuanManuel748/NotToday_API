@@ -139,5 +139,13 @@ public class BillController {
         return ResponseEntity.status(HttpStatus.OK).body(paidBills);
     }
 
+    @Operation(summary = "Recupera el total que debe un usuario")
+    @GetMapping("/total/owed/{userId}")
+    public ResponseEntity<BigDecimal> getTotalOwedByUserId(@PathVariable Long userId) {
+        BigDecimal totalOwed = billService.getTotalOwedAmountByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(totalOwed);
+    }
+
+
 
 }

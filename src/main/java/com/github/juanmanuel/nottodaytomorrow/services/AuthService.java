@@ -1,5 +1,6 @@
 package com.github.juanmanuel.nottodaytomorrow.services;
 
+import com.github.juanmanuel.nottodaytomorrow.exceptions.AuthException;
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.repositories.UserRepository;
@@ -36,7 +37,7 @@ public class AuthService {
         if (passEncoder.matches(pass, user.getPassword())) {
             return user;
         } else {
-            throw new RuntimeException("Invalid password.");
+            throw new AuthException("Invalid password.");
         }
     }
 }

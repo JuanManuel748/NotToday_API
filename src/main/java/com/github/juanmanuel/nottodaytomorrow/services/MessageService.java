@@ -22,7 +22,7 @@ public class MessageService {
 
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
-    private final FriendshipRepository friendshipRepository; // Opcional, para verificar amistad
+    private final FriendshipRepository friendshipRepository;
 
     @Autowired
     public MessageService(MessageRepository messageRepository, UserRepository userRepository, FriendshipRepository friendshipRepository) {
@@ -103,5 +103,17 @@ public class MessageService {
     public List<Message> getReceivedMessages(Long userId) {
         findUserById(userId);
         return messageRepository.findByReceiverIdOrderBySentAtDesc(userId);
+    }
+
+    public Message getLastMessage(Long userId1, Long userId2) {
+        // Validar existencia de usuarios si es necesario, aunque la consulta no fallará si no existen, devolverá lista vacía.
+        // findUserById(userId1);
+        // findUserById(userId2);
+
+        List<Message> messages = messageRepository.findMessagesBetweenUsersOrderBySentAtDesc(userId1, userId2);
+        if (messages.isEmpty()) {
+            throw new EntityNotFoundException("No se encontró ningún mensaje entre los usuarios con ID: " + userId1 + " y " + userId2);
+        }
+        return messages.get(0); // El primer mensaje es el más reciente debido a ORDER BY DESC
     }
 }
