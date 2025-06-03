@@ -228,6 +228,16 @@ public class BillService {
         return billsUsers.stream().map(BillsUser::getBill).collect(Collectors.toList());
     }
 
+    public BigDecimal getTotalOwedAmountByUserId(Long userId) {
+        List<BillsUser> billsUsers = buService.getUnpaidBillsByUserId(userId);
+        if (billsUsers.isEmpty()) {
+            throw new NotFoundException("No bills found for user id: " + userId, Bill.class);
+        }
+        return billsUsers.stream()
+                .map(bu -> bu.getOwed() != null ? bu.getOwed() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     private boolean validate(Bill b) {
         boolean result = false;
         if (b.getAmount().compareTo(BigDecimal.ZERO) > 0) {

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -33,4 +34,9 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * Encuentra todos los mensajes recibidos por un usuario, ordenados por fecha de envío descendente.
      */
     List<Message> findByReceiverIdOrderBySentAtDesc(Long receiverId);
+
+    @Query(
+            "SELECT m FROM Message m WHERE (m.sender.id = :userUd AND m.receiver.id = :senderId) OR (m.sender.id = :senderId AND m.receiver.id = :userUd) ORDER BY m.sentAt DESC"
+    )
+    List<Message> findMessagesBetweenUsersOrderBySentAtDesc(@Param("userUd") Long userUd, @Param("senderId") Long senderId);
 }

@@ -3,6 +3,7 @@ package com.github.juanmanuel.nottodaytomorrow.controllers;
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.Message;
 import com.github.juanmanuel.nottodaytomorrow.services.MessageService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -82,6 +83,17 @@ public class MessageController {
             return ResponseEntity.ok(messages);
         } catch (EntityNotFoundException e) {
             throw new NotFoundException("Couln't find messages unread from user with id: " + userId, Message.class);
+        }
+    }
+
+    @Operation(summary = "Recoge el ultimo mensaje entre dos usuarios")
+    @GetMapping("/{userId}/{senderId}/last")
+    public ResponseEntity<Message> getLastMessage(@PathVariable Long userId, @PathVariable Long senderId) {
+        try {
+            Message lastMessage = messageService.getLastMessage(userId, senderId);
+            return ResponseEntity.ok(lastMessage);
+        } catch (NotFoundException e) {
+            throw new NotFoundException("Last message between users with ids: " + userId + " and " + senderId + " not found", Message.class);
         }
     }
 

@@ -2,14 +2,15 @@ package com.github.juanmanuel.nottodaytomorrow.services;
 
 import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.Task;
+import com.github.juanmanuel.nottodaytomorrow.models.Team;
 import com.github.juanmanuel.nottodaytomorrow.repositories.TaskRepository;
+import com.github.juanmanuel.nottodaytomorrow.repositories.TeamRepository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
+
 
     public List<Task> getAll() throws NotFoundException {
         List<Task> tasks = taskRepository.findAll();
@@ -67,8 +69,6 @@ public class TaskService {
         }
     }
 
-
-
     public List<Task> findByAssigned(Long assignedId) throws NotFoundException {
         List<Task> tasks = taskRepository.findByAssigned(assignedId);
         if (!tasks.isEmpty()) {
@@ -95,6 +95,7 @@ public class TaskService {
             throw new NotFoundException("Task not found with team id: " + teamId, tasks);
         }
     }
+
     public List<Task> findByTeamNotCompleted(Long teamId) throws NotFoundException {
         List<Task> tasks = taskRepository.findByTeamNotCompleted(teamId);
         if (!tasks.isEmpty()) {
@@ -110,6 +111,30 @@ public class TaskService {
             return tasks;
         } else {
             throw new NotFoundException("Task not found with status: " + status, tasks);
+        }
+    }
+
+    public Long countCompletedTasksByAssignedAndTeam(Long teamId, Long userId) {
+        return taskRepository.countCompletedTasksByAssignedNteam(teamId, userId);
+    }
+
+
+    /**
+     * Método programado para actualizar tareas pendientes a atrasadas.
+     * Se ejecuta cada hora (puedes ajustar la expresión cron según tus necesidades).
+     * Ejemplo: "0 0 0 * * ?" se ejecuta a medianoche todos los días.
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void updateOverdueTasks() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Task> overdueTasks = taskRepository.findTasksByStateAndLimitDateBefore(now);
+
+        if (!overdueTasks.isEmpty()) {
+            for (Task task : overdueTasks) {
+                task.setState("ATRASADA");
+                taskRepository.save(task);
+            }
         }
     }
 

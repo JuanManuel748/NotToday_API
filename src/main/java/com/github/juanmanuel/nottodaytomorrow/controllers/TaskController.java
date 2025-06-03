@@ -1,7 +1,9 @@
 package com.github.juanmanuel.nottodaytomorrow.controllers;
 
+import com.github.juanmanuel.nottodaytomorrow.exceptions.NotFoundException;
 import com.github.juanmanuel.nottodaytomorrow.models.Task;
 import com.github.juanmanuel.nottodaytomorrow.models.Team;
+import com.github.juanmanuel.nottodaytomorrow.repositories.TeamRepository;
 import com.github.juanmanuel.nottodaytomorrow.services.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +94,11 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.OK).body(tasks);
     }
 
+    @GetMapping("/team/{teamId}/user/{userId}/count")
+    public ResponseEntity<Long> countCompletedTasksByAssignedAndTeam(@PathVariable Long teamId, @PathVariable Long userId) {
+        Long count = taskService.countCompletedTasksByAssignedAndTeam(teamId, userId);
+        return ResponseEntity.ok(count);
+    }
 
 
 }
