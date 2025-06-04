@@ -63,14 +63,6 @@ public class User {
     @JsonIgnore
     private List<BillsUser> billsUsers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Comment> myComments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "commenter", fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Comment> commentsMade = new ArrayList<>();
-
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Task> tasksCreated = new ArrayList<>();
@@ -196,22 +188,6 @@ public class User {
 
     public void setBillsUsers(List<BillsUser> billsUsers) {
         this.billsUsers = billsUsers;
-    }
-
-    public List<Comment> getMyComments() {
-        return myComments;
-    }
-
-    public void setMyComments(List<Comment> myComments) {
-        this.myComments = myComments;
-    }
-
-    public List<Comment> getCommentsMade() {
-        return commentsMade;
-    }
-
-    public void setCommentsMade(List<Comment> commentsMade) {
-        this.commentsMade = commentsMade;
     }
 
     public List<Task> getTasksCreated() {

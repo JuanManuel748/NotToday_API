@@ -2,8 +2,6 @@ package com.github.juanmanuel.nottodaytomorrow.repositories;
 
 import com.github.juanmanuel.nottodaytomorrow.models.BillsUser;
 import com.github.juanmanuel.nottodaytomorrow.models.BillsUserId;
-import com.github.juanmanuel.nottodaytomorrow.models.Comment;
-import com.github.juanmanuel.nottodaytomorrow.models.CommentId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
