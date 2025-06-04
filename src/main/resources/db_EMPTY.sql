@@ -2,6 +2,7 @@
 -- Mejoras aplicadas al modelo
 
 CREATE SCHEMA IF NOT EXISTS `nottoday_db` DEFAULT CHARACTER SET utf8;
+USE `nottoday_db`;
 
 CREATE TABLE IF NOT EXISTS `nottoday_db`.`users` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -123,27 +124,6 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`bills_users` (
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8;
 
-CREATE TABLE IF NOT EXISTS `nottoday_db`.`comments` (
-    `user_id` BIGINT NOT NULL,
-    `commenter_id` BIGINT NOT NULL,
-    `score` INT NOT NULL,
-    `comment` VARCHAR(255) NOT NULL,
-    `comment_date` DATE NOT NULL,
-    `anonymous` BOOLEAN NOT NULL DEFAULT 0,
-    PRIMARY KEY (`user_id`, `commenter_id`),
-    INDEX `fk_comments_users2_idx` (`commenter_id` ASC),
-    CONSTRAINT `fk_comments_users1`
-    FOREIGN KEY (`user_id`)
-    REFERENCES `nottoday_db`.`users` (`id`)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE,
-    CONSTRAINT `fk_comments_users2`
-    FOREIGN KEY (`commenter_id`)
-    REFERENCES `nottoday_db`.`users` (`id`)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8;
 
 CREATE TABLE IF NOT EXISTS `nottoday_db`.`friendships` (
     `user_id1` BIGINT NOT NULL,
@@ -162,8 +142,7 @@ CREATE TABLE IF NOT EXISTS `nottoday_db`.`friendships` (
     FOREIGN KEY (`user_id2`)
     REFERENCES `nottoday_db`.`users` (`id`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE,
-    CONSTRAINT `check_user_order` CHECK (`user_id1` < `user_id2`) -- Opcional, para evitar duplicados si la amistad es simétrica
+    ON UPDATE CASCADE
     )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8;
