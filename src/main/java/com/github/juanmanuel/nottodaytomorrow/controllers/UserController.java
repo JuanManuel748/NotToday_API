@@ -91,4 +91,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    @Operation(summary = "Cambiar contraseña del usuario por su id")
+    @PutMapping("/{id}/password")
+    public ResponseEntity<User> changePassword(@PathVariable Long id, @RequestParam String oldPassword, @RequestParam String newPassword) {
+        User user = userService.changePassword(id, oldPassword, newPassword);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
+    }
+
 }
