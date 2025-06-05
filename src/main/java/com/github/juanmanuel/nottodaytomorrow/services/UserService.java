@@ -78,11 +78,6 @@ public class UserService implements UserDetailsService {
         if (existingUserOptional.isPresent()) {
             User updatedUser = existingUserOptional.get();
             updatedUser.setEmail(user.getEmail());
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                if (!passEncoder.matches(user.getPassword(), updatedUser.getPassword())) {
-                    updatedUser.setPassword(passEncoder.encode(user.getPassword()));
-                }
-            }
             updatedUser.setName(user.getName());
             updatedUser.setPic(user.getPic());
             updatedUser.setDescription(user.getDescription());
