@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    /*
+    * Hay un error que cambia las contraseñas cada cierto tiempo
+    */
     @Autowired
     private AuthService authService;
 
