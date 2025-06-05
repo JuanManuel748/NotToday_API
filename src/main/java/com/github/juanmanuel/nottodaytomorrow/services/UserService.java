@@ -79,7 +79,9 @@ public class UserService implements UserDetailsService {
             User updatedUser = existingUserOptional.get();
             updatedUser.setEmail(user.getEmail());
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                updatedUser.setPassword(passEncoder.encode(user.getPassword()));
+                if (!passEncoder.matches(user.getPassword(), updatedUser.getPassword())) {
+                    updatedUser.setPassword(passEncoder.encode(user.getPassword()));
+                }
             }
             updatedUser.setName(user.getName());
             updatedUser.setPic(user.getPic());
@@ -169,5 +171,21 @@ public class UserService implements UserDetailsService {
                 user.getPassword(),
                 new ArrayList<>() // Lista vacía de autoridades
         );
+    }
+
+    public User changePassword(Long id, String currentPassword, String newPassword) throws NotFoundException {
+        Optional<User> existingUserOptional = userRepo.findById(id);
+        if (existingUserOptional.isPresent()) {
+            User user = existingUserOptional.get();
+
+            if (!passEncoder.matches(currentPassword, user.getPassword())) {
+                throw new IllegalArgumentException("Current password is incorrect");
+            }
+
+            user.setPassword(passEncoder.encode(newPassword));
+            return userRepo.save(user);
+        } else {
+            throw new NotFoundException("User not found with id: " + id, User.class);
+        }
     }
 }
