@@ -60,17 +60,7 @@ public class AuthConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/test-public").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        /* Permitir acceso publico a todos los endpoints de la API
-                        .requestMatchers("/users/**").permitAll()
-                        .requestMatchers("/teams/**").permitAll()
-                        .requestMatchers("/tasks/**").permitAll()
-                        .requestMatchers("/bills/**").permitAll()
-                        .requestMatchers("/comments/**").permitAll()
-                        .requestMatchers("/friendships/**").permitAll()
-                        .requestMatchers("/messages/**").permitAll()
-                        */
-
-                        /* Permitir accceso publico solo al iniciar sesion    */
+                        /* Permitir accceso publico solo al iniciar sesion y registrarse    */
                         .requestMatchers(HttpMethod.GET, "/users").permitAll() // Permitir buscar usuarios
                         .requestMatchers(HttpMethod.POST, "/users").permitAll() // Permitir registrar usuarios
                         .requestMatchers("/users/{id}/**").authenticated() // Proteger otros endpoints de usuario

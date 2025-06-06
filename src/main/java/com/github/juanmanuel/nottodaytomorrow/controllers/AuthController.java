@@ -10,19 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    /*
-    * Hay un error que cambia las contraseñas cada cierto tiempo
-    */
     @Autowired
     private AuthService authService;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Operation(summary = "Verifica al usuario y devuelve un token JWT")
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody User user) {
         try {
