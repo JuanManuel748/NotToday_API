@@ -5,6 +5,7 @@ import com.github.juanmanuel.nottodaytomorrow.models.Friendship;
 import com.github.juanmanuel.nottodaytomorrow.models.FriendshipId;
 import com.github.juanmanuel.nottodaytomorrow.models.User;
 import com.github.juanmanuel.nottodaytomorrow.services.FriendshipService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class FriendshipController {
     @Autowired
     private FriendshipService friendshipService;
 
+    @Operation(summary = "Crea una relación de amistad entre dos usuarios")
     @PostMapping("/{requesterId}/request/{targetId}")
     public ResponseEntity<?> sendFriendRequest(@PathVariable Long requesterId, @PathVariable Long targetId) {
         try {
@@ -32,6 +34,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Acepta una solicitud de amistad")
     @PutMapping("/{acceptorId}/accept/{requesterId}")
     public ResponseEntity<?> acceptFriendRequest(@PathVariable Long acceptorId, @PathVariable Long requesterId) {
         try {
@@ -44,6 +47,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Rechaza una solicitud de amistad")
     @DeleteMapping("/{declinerId}/decline/{requesterId}")
     public ResponseEntity<?> declineFriendRequest(@PathVariable Long declinerId, @PathVariable Long requesterId) {
         try {
@@ -56,6 +60,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Cancela una solicitud de amistad")
     @DeleteMapping("/{removerId}/remove/{friendToRemoveId}")
     public ResponseEntity<?> removeFriend(@PathVariable Long removerId, @PathVariable Long friendToRemoveId) {
         try {
@@ -68,6 +73,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Elimina una relación de amistad")
     @PutMapping("/{blockerId}/block/{userToBlockId}")
     public ResponseEntity<?> blockUser(@PathVariable Long blockerId, @PathVariable Long userToBlockId) {
         try {
@@ -80,6 +86,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Desbloquea un usuario previamente bloqueado")
     @PutMapping("/{unblockerId}/unblock/{userToUnblockId}")
     public ResponseEntity<?> unblockUser(@PathVariable Long unblockerId, @PathVariable Long userToUnblockId) {
         try {
@@ -92,6 +99,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Busca las relaciones de amistad de un usuario por su id")
     @GetMapping("/{userId}")
     public ResponseEntity<List<User>> getFriends(@PathVariable Long userId) {
         try {
@@ -102,6 +110,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Busca las peticiones de amistad pendientes entrantes de un usuario por su id")
     @GetMapping("/{userId}/requests/incoming")
     public ResponseEntity<List<Friendship>> getIncomingPendingRequests(@PathVariable Long userId) {
         try {
@@ -112,6 +121,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Busca las peticiones de amistad pendientes salientes de un usuario por su id")
     @GetMapping("/{userId}/requests/outgoing")
     public ResponseEntity<List<Friendship>> getOutgoingPendingRequests(@PathVariable Long userId) {
         try {
@@ -122,6 +132,7 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Busca el estado de amistad entre dos usuarios")
     @GetMapping("/{userId1}/{userId2}")
     public ResponseEntity<Friendship> getFriendshipStatus(@PathVariable Long userId1, @PathVariable Long userId2) {
         try {
@@ -134,15 +145,15 @@ public class FriendshipController {
         }
     }
 
+    @Operation(summary = "Busca los usuarios bloqueados por un usuario")
     @GetMapping("/{userId}/blocked")
-    public ResponseEntity<?> getBlockedUsers(@PathVariable Long userId) { // Cambiado a ResponseEntity<?> para flexibilidad
+    public ResponseEntity<?> getBlockedUsers(@PathVariable Long userId) {
         try {
             List<User> blockedUsers = friendshipService.getBlockedUsers(userId);
             return ResponseEntity.ok(blockedUsers);
-        } catch (EntityNotFoundException e) { // Captura si el usuario blockerId (userId) no existe
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario con ID " + userId + " no encontrado.");
-        } catch (Exception e) { // Captura genérica para otros posibles errores inesperados
-            // Considera loggear el error e.getMessage() o e.printStackTrace()
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la solicitud.");
         }
     }
